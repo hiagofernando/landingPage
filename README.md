@@ -279,3 +279,5 @@ Scripts locais úteis (não mudam o `npm run dev` de sempre, que continua sendo 
 | `npm run deploy:vinext` | publica direto da sua máquina, se algum dia você tiver o `wrangler` autenticado localmente |
 
 Compatibilidade verificada com `npx vinext check`: 81%, sem bloqueios reais para este projeto (as únicas ressalvas são cosméticas — fontes carregadas via CDN e otimização de imagem local ainda não disponível no adaptador, o que não afeta o site já que as fotos da frota são SVG).
+
+_Worker `rogan-locadora` conectado na Cloudflare em 2026-09-11._
