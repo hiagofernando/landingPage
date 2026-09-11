@@ -3,16 +3,23 @@ import { addDays, today } from '@/lib/dates';
 
 /**
  * ============================================================================
- *  FROTA — DADOS DEMONSTRATIVOS
+ *  FROTA — DADOS PARCIALMENTE REAIS (preço confirmado, modelos ainda não)
  * ============================================================================
- *  ATENÇÃO: nenhum veículo, preço ou período abaixo foi informado pela ROGAN.
- *  São exemplos criados apenas para o site funcionar de ponta a ponta.
+ *  Preço confirmado pelo cliente: diária fixa de R$150 para toda a frota,
+ *  com pacote semanal (R$900) e mensal (R$3000) — ver `calculateQuote` em
+ *  `src/lib/pricing.ts`.
  *
- *  Para colocar a frota real no ar:
- *    1. substitua os objetos deste arquivo (ou troque `getVehicles` em
- *       `src/data/repository.ts` por uma consulta ao banco);
- *    2. troque as ilustrações de `/public/frota` pelas fotos reais;
- *    3. desligue o aviso de demonstração com NEXT_PUBLIC_DEMO_MODE=false.
+ *  ATENÇÃO: marca, modelo, ano e fotos abaixo AINDA são placeholders — não
+ *  foram confirmados pela ROGAN. O cliente mandou uma montagem de posts do
+ *  Instagram com a frota real, mas a imagem não tem resolução suficiente
+ *  para ler o modelo/emblema de cada carro com segurança. Antes de publicar:
+ *    1. pedir ao cliente a lista real (marca/modelo/ano) de cada carro, ou
+ *       fotos individuais em resolução maior;
+ *    2. trocar os objetos deste arquivo (ou `getVehicles` em
+ *       `src/data/repository.ts` por uma consulta ao banco) com esses dados;
+ *    3. trocar as ilustrações de `/public/frota` pelas fotos reais dos
+ *       carros (sem a moldura/texto do post do Instagram);
+ *    4. desligar o aviso de demonstração com NEXT_PUBLIC_DEMO_MODE=false.
  *
  *  Campos obrigatórios estão descritos em `src/types/index.ts`.
  * ============================================================================
@@ -58,9 +65,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 235,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 129,
-    weeklyPrice: 799,
-    monthlyPrice: 2590,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('hatch', 'Fiat Mobi'),
     description:
       'Compacto, econômico e fácil de estacionar. Boa escolha para quem vai rodar dentro de Carpina e nas cidades vizinhas no dia a dia.',
@@ -83,9 +90,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 290,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 139,
-    weeklyPrice: 849,
-    monthlyPrice: 2790,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('hatch', 'Renault Kwid'),
     description:
       'Altura livre do solo maior que a da maioria dos compactos, o que ajuda em rua de paralelepípedo e estrada vicinal. Econômico e com porta-malas útil.',
@@ -108,9 +115,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 300,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 159,
-    weeklyPrice: 979,
-    monthlyPrice: 3190,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('hatch', 'Hyundai HB20'),
     description:
       'Um dos compactos mais conhecidos do país. Bom equilíbrio entre consumo, espaço interno e conforto para viagens curtas.',
@@ -133,9 +140,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 275,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 189,
-    weeklyPrice: 1169,
-    monthlyPrice: 3790,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('hatch', 'Chevrolet Onix'),
     description:
       'Câmbio automático e motor turbo: dirigir no trânsito fica mais tranquilo e as ultrapassagens na BR ficam mais seguras.',
@@ -158,9 +165,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 300,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 169,
-    weeklyPrice: 1039,
-    monthlyPrice: 3390,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('hatch', 'Volkswagen Polo Track'),
     description:
       'Carroceria mais encorpada que a da média dos compactos, com boa estabilidade em rodovia. Indicado para quem vai rodar mais quilômetros.',
@@ -183,9 +190,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 469,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 199,
-    weeklyPrice: 1229,
-    monthlyPrice: 3990,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('sedan', 'Chevrolet Onix Plus'),
     description:
       'Sedã com porta-malas grande e câmbio automático. Boa opção para viagem em família ou para quem trabalha com aplicativo.',
@@ -208,9 +215,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 468,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 209,
-    weeklyPrice: 1289,
-    monthlyPrice: 4190,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('sedan', 'Hyundai HB20S'),
     description:
       'Sedã confortável, com bom espaço no banco de trás. Boa escolha para levar clientes, família ou bagagem de viagem.',
@@ -233,9 +240,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 320,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 259,
-    weeklyPrice: 1599,
-    monthlyPrice: 5190,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('suv', 'Jeep Renegade'),
     description:
       'SUV com posição de dirigir mais alta e suspensão preparada para piso irregular. Indicado para quem vai pegar estrada de barro ou viajar com a família.',
@@ -258,9 +265,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 422,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 279,
-    weeklyPrice: 1729,
-    monthlyPrice: 5590,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('suv', 'Hyundai Creta'),
     description:
       'SUV espaçoso, com porta-malas grande e interior confortável. Boa pedida para viagens longas com a família completa.',
@@ -283,9 +290,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 844,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 219,
-    weeklyPrice: 1349,
-    monthlyPrice: 4390,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('picape', 'Fiat Strada'),
     description:
       'Picape de cabine dupla: leva cinco pessoas e ainda sobra caçamba para carga, feira, mudança pequena ou material de obra.',
@@ -308,9 +315,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 937,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 299,
-    weeklyPrice: 1849,
-    monthlyPrice: 5990,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('picape', 'Fiat Toro'),
     description:
       'Picape média, automática e confortável como um SUV, mas com caçamba. Para quem precisa de carga sem abrir mão de conforto.',
@@ -333,9 +340,9 @@ export const demoVehicles: Vehicle[] = [
     trunk: 414,
     doors: 4,
     airConditioning: true,
-    dailyPrice: 239,
-    weeklyPrice: 1479,
-    monthlyPrice: 4790,
+    dailyPrice: 150,
+    weeklyPrice: 900,
+    monthlyPrice: 3000,
     photos: photosFor('suv', 'Renault Duster'),
     description:
       'SUV robusto, com boa altura do solo e porta-malas amplo. Se dá bem em estrada ruim e aguenta bagagem de viagem longa.',
