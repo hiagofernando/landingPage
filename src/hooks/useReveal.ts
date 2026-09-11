@@ -1,40 +1,64 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Revela o elemento quando ele entra na viewport.
- * Usa IntersectionObserver (sem biblioteca de animação) e só dispara uma vez.
- * Quem tem `prefers-reduced-motion` já recebe o conteúdo visível pelo CSS.
+ *
+ * O estado é do React, e não um atributo escrito direto no DOM: escrito no
+ * DOM, qualquer re-render do componente pai reverteria o atributo e o
+ * conteúdo já revelado sumiria da tela.
+ *
+ * Elementos que já estão visíveis no carregamento são revelados no primeiro
+ * quadro, sem esperar o IntersectionObserver — assim a primeira tela nunca
+ * aparece vazia. Quem tem `prefers-reduced-motion` recebe tudo visível
+ * direto pelo CSS.
  */
 export function useReveal<T extends HTMLElement = HTMLDivElement>(delayMs = 0) {
   const ref = useRef<T>(null);
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
+    if (!element || revealed) return;
 
-    if (typeof IntersectionObserver === 'undefined') {
-      element.dataset.revealed = 'true';
-      return;
-    }
+    let observer: IntersectionObserver | undefined;
+    let timer: number | undefined;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          window.setTimeout(() => {
-            element.dataset.revealed = 'true';
-          }, delayMs);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
-    );
+    // A checagem espera um quadro: antes do primeiro layout não há posição.
+    const frame = requestAnimationFrame(() => {
+      if (typeof IntersectionObserver === 'undefined') {
+        setRevealed(true);
+        return;
+      }
 
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [delayMs]);
+      const rect = element.getBoundingClientRect();
+      const jaVisivel = rect.top < window.innerHeight && rect.bottom > 0;
+      if (jaVisivel) {
+        setRevealed(true);
+        return;
+      }
 
-  return ref;
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            observer?.unobserve(entry.target);
+            timer = window.setTimeout(() => setRevealed(true), delayMs);
+          }
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
+      );
+
+      observer.observe(element);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+      if (timer) window.clearTimeout(timer);
+    };
+  }, [delayMs, revealed]);
+
+  return { ref, revealed };
 }

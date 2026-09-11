@@ -23,6 +23,7 @@ import {
   resolveWindow,
 } from '@/data/campaigns';
 import { bookingRequestMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
+import { fleetUrl, vehicleUrl } from '@/lib/urls';
 import { demoVehicles } from '@/data/vehicles';
 import type { Vehicle } from '@/types';
 
@@ -268,6 +269,31 @@ describe('mensagem do WhatsApp', () => {
     const url = buildWhatsAppUrl('Olá, tudo bem?');
     assert.ok(url.startsWith('https://wa.me/'));
     assert.ok(url.includes('?text=Ol%C3%A1'));
+  });
+});
+
+describe('links que preservam o período', () => {
+  const periodo = { pickupDate: '2026-07-01', returnDate: '2026-07-08' };
+
+  it('leva as datas para a página do veículo', () => {
+    assert.equal(
+      vehicleUrl('jeep-renegade', periodo),
+      '/frota/jeep-renegade?retirada=2026-07-01&devolucao=2026-07-08',
+    );
+  });
+
+  it('volta para a frota mantendo as datas', () => {
+    assert.equal(fleetUrl(periodo), '/frota?retirada=2026-07-01&devolucao=2026-07-08');
+  });
+
+  it('sem período, gera a URL limpa', () => {
+    assert.equal(vehicleUrl('jeep-renegade'), '/frota/jeep-renegade');
+    assert.equal(fleetUrl(), '/frota');
+    assert.equal(fleetUrl({ pickupDate: '', returnDate: '' }), '/frota');
+  });
+
+  it('ignora datas inválidas', () => {
+    assert.equal(vehicleUrl('x', { pickupDate: '2026-02-30', returnDate: '' }), '/frota/x');
   });
 });
 

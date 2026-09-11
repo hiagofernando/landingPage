@@ -16,9 +16,10 @@ export function Reveal({
   className?: string;
   as?: ElementType;
 }) {
-  const ref = useReveal<HTMLDivElement>(delay);
+  const { ref, revealed } = useReveal<HTMLDivElement>(delay);
+
   return (
-    <Tag ref={ref} data-revealed="false" className={cn('reveal', className)}>
+    <Tag ref={ref} data-revealed={revealed} className={cn('reveal', className)}>
       {children}
     </Tag>
   );

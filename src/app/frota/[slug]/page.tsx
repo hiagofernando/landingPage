@@ -6,7 +6,8 @@ import { siteConfig } from '@/config/site';
 import { getVehicleBySlug, getVehicleSlugs, getVehicles } from '@/data/repository';
 import { CATEGORY_LABELS, FUEL_LABELS, TRANSMISSION_LABELS, formatCurrency } from '@/lib/format';
 import { Badge } from '@/components/ui/Badge';
-import { Check, ChevronLeft } from '@/components/ui/Icons';
+import { Check } from '@/components/ui/Icons';
+import { FleetBackLink } from '@/components/fleet/FleetBackLink';
 import { VehicleGallery } from '@/components/vehicle/VehicleGallery';
 import { VehicleSpecsGrid } from '@/components/vehicle/VehicleSpecs';
 import { VehicleBookingPanel } from '@/components/vehicle/VehicleBookingPanel';
@@ -192,13 +193,9 @@ export default async function VehiclePage({ params }: VehiclePageProps) {
               </p>
             </section>
 
-            <Link
-              href="/frota"
-              className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-ink underline underline-offset-4 transition-colors hover:text-accent-700"
-            >
-              <ChevronLeft className="size-4" />
-              Voltar para a frota
-            </Link>
+            <Suspense fallback={<span className="h-5 w-40 animate-pulse rounded bg-mist-200" />}>
+              <FleetBackLink />
+            </Suspense>
           </div>
 
           {/* Coluna direita: cálculo e conversão */}

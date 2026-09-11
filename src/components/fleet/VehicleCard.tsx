@@ -5,6 +5,7 @@ import { checkAvailability } from '@/lib/availability';
 import { CATEGORY_LABELS, formatCurrency, formatCurrencyCompact } from '@/lib/format';
 import { calculateDays, calculateQuote } from '@/lib/pricing';
 import { pluralizeDays } from '@/lib/dates';
+import { vehicleUrl } from '@/lib/urls';
 import { cn } from '@/lib/cn';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -24,7 +25,9 @@ export function VehicleCard({ vehicle, range, priority }: VehicleCardProps) {
   const availability = checkAvailability(vehicle, range?.pickupDate, range?.returnDate);
   const days = calculateDays(range?.pickupDate || '', range?.returnDate || '');
   const quote = days > 0 ? calculateQuote(vehicle, days) : null;
-  const href = `/frota/${vehicle.slug}`;
+  // Leva o período junto: sem isso o cliente teria que escolher as datas
+  // outra vez ao abrir a página do veículo.
+  const href = vehicleUrl(vehicle.slug, range);
   const cover = vehicle.photos[0];
 
   return (
