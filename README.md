@@ -250,3 +250,32 @@ Depois de apontar o domínio, atualize `NEXT_PUBLIC_SITE_URL` — ele alimenta o
 - **Nenhum dado inventado sobre a ROGAN.** Sem "X anos de mercado", sem número
   de clientes, sem regras de documentação ou seguro. Onde falta informação, o
   site diz que ela vem em breve.
+
+---
+
+## 9. Publicando na Cloudflare (Workers)
+
+O projeto já está configurado para rodar na Cloudflare via [vinext](https://github.com/cloudflare/vinext) — o adaptador que a própria Cloudflare recomenda hoje para Next.js em Workers. Um namespace de KV (`rogan-locadora-VINEXT_KV_CACHE`, usado para o cache de dados do ISR) já foi criado na conta e o ID está em `wrangler.jsonc`.
+
+O que falta é só conectar o repositório pelo painel — a Cloudflare não deixa fazer isso por linha de comando sem um token de API, então esse passo é manual:
+
+1. **Workers e Pages** → **Criar aplicativo** → conectar ao repositório `hiagofernando/landingPage`, branch `claude/rogan-rental-website-sk1nn3`.
+2. O nome do Worker precisa ser **exatamente `rogan-locadora`** (tem que bater com `wrangler.jsonc`, senão o build falha).
+3. Nas configurações de build, defina:
+   - **Comando de build:** `npm run build:vinext`
+   - **Comando de deploy:** `npm run deploy:vinext`
+
+   (o comando padrão `npx wrangler deploy` **não** funciona aqui — o `vinext build` gera uma configuração própria em `dist/server/wrangler.json`, e é ela que precisa ser usada no deploy.)
+4. Em **variáveis de ambiente de build**, adicione as mesmas do `.env.example` que fizerem sentido (pelo menos `NEXT_PUBLIC_WHATSAPP_NUMBER` e `NEXT_PUBLIC_DEMO_MODE=false` quando os dados reais estiverem prontos). Elas são embutidas no site durante o build, então precisam estar aqui — e não como "vars" do Worker em runtime.
+5. Salvar. Todo push nessa branch gera um novo deploy automaticamente.
+
+Scripts locais úteis (não mudam o `npm run dev` de sempre, que continua sendo Next.js puro):
+
+| Script | O que faz |
+| --- | --- |
+| `npm run dev:vinext` | roda o site com o motor da Cloudflare, localmente |
+| `npm run build:vinext` | gera o build de produção para Workers |
+| `npm run start:vinext` | sobe o build gerado num Worker local (para testar antes de publicar) |
+| `npm run deploy:vinext` | publica direto da sua máquina, se algum dia você tiver o `wrangler` autenticado localmente |
+
+Compatibilidade verificada com `npx vinext check`: 81%, sem bloqueios reais para este projeto (as únicas ressalvas são cosméticas — fontes carregadas via CDN e otimização de imagem local ainda não disponível no adaptador, o que não afeta o site já que as fotos da frota são SVG).
