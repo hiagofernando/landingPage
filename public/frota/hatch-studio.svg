@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img">
+<defs>
+<linearGradient id="bg-hatch-studio" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8F6F3"/><stop offset=".6" stop-color="#EEEBE5"/><stop offset="1" stop-color="#DFDBD2"/></linearGradient>
+<radialGradient id="spot-hatch-studio" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+<linearGradient id="body-hatch-studio" x1=".1" y1="0" x2=".55" y2="1"><stop offset="0" stop-color="#4C5057"/><stop offset=".46" stop-color="#2B2E34"/><stop offset="1" stop-color="#15171B"/></linearGradient>
+<linearGradient id="glass-hatch-studio" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#98A1AC"/><stop offset="1" stop-color="#59626D"/></linearGradient>
+<linearGradient id="shine-hatch-studio" x1="0" y1="0" x2="1" y2=".25"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".42" stop-color="#fff" stop-opacity=".16"/><stop offset=".75" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="shadow-hatch-studio" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1A1C20" stop-opacity="0.4"/><stop offset=".68" stop-color="#1A1C20" stop-opacity="0.11200000000000002"/><stop offset="1" stop-color="#1A1C20" stop-opacity="0"/></radialGradient>
+<linearGradient id="rim-hatch-studio" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DCD9D3"/><stop offset="1" stop-color="#8B8984"/></linearGradient>
+</defs>
+<rect width="1000" height="620" fill="url(#bg-hatch-studio)"/>
+<rect width="1000" height="620" fill="url(#spot-hatch-studio)"/>
+<ellipse cx="500" cy="502" rx="352" ry="26" fill="url(#shadow-hatch-studio)"/>
+<circle cx="292" cy="420" r="78" fill="#0D0E11"/><circle cx="676" cy="420" r="78" fill="#0D0E11"/>
+<path d="M 176 420 C 162 392, 166 358, 186 344 C 206 330, 240 320, 276 314 C 296 283, 326 251, 358 237 C 398 220, 470 215, 540 219 C 578 222, 606 235, 626 259 L 668 307 C 706 311, 740 319, 762 331 C 784 343, 792 376, 788 420 L 749 420 A 73 73 0 0 0 603 420 L 365 420 A 73 73 0 0 0 219 420 Z" fill="url(#body-hatch-studio)"/>
+<path d="M 176 420 C 162 392, 166 358, 186 344 C 206 330, 240 320, 276 314 C 296 283, 326 251, 358 237 C 398 220, 470 215, 540 219 C 578 222, 606 235, 626 259 L 668 307 C 706 311, 740 319, 762 331 C 784 343, 792 376, 788 420 L 749 420 A 73 73 0 0 0 603 420 L 365 420 A 73 73 0 0 0 219 420 Z" fill="url(#shine-hatch-studio)"/>
+<path d="M 312 308 C 326 279, 350 255, 376 246 C 404 236, 440 233, 468 234 L 468 304 Z" fill="url(#glass-hatch-studio)"/><path d="M 484 234 C 534 236, 572 245, 592 263 L 628 304 L 484 304 Z" fill="url(#glass-hatch-studio)"/>
+
+<path d="M 477 234 L 477 306" stroke="#0A0B0D" stroke-width="5" opacity=".7"/>
+<path d="M 276 314 C 400 303, 556 303, 668 307" stroke="#0A0B0D" stroke-width="3" opacity=".45" fill="none"/>
+<path d="M 358 340 L 496 338" stroke="#0A0B0D" stroke-width="4" opacity=".28" stroke-linecap="round"/>
+<rect x="404" y="320" width="30" height="8" rx="4" fill="#0A0B0D" opacity=".55"/><rect x="556" y="320" width="30" height="8" rx="4" fill="#0A0B0D" opacity=".55"/>
+<rect x="178" y="354" width="50" height="21" rx="9" fill="#F1EDE0" opacity=".94"/>
+<rect x="762" y="346" width="26" height="30" rx="6" fill="#C4483C" opacity=".92"/>
+<path d="M 316 312 l -27 -20 l 38 -2 Z" fill="#15171B"/>
+<path d="M 176 396 L 788 396" stroke="#000" stroke-width="2" opacity=".14"/>
+<g><circle cx="292" cy="420" r="66" fill="#131418"/><circle cx="292" cy="420" r="64.67999999999999" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2"/><circle cx="292" cy="420" r="40.92" fill="url(#rim-hatch-studio)"/><circle cx="292" cy="420" r="29.04" fill="#131418" opacity=".85"/><circle cx="292" cy="420" r="10.56" fill="#DCD9D3"/><line x1="292.0" y1="408.1" x2="292.0" y2="383.0" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/><line x1="303.3" y1="416.3" x2="327.2" y2="408.6" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/><line x1="299.0" y1="429.6" x2="313.7" y2="449.9" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/><line x1="285.0" y1="429.6" x2="270.3" y2="449.9" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/><line x1="280.7" y1="416.3" x2="256.8" y2="408.6" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/></g><g><circle cx="676" cy="420" r="66" fill="#131418"/><circle cx="676" cy="420" r="64.67999999999999" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2"/><circle cx="676" cy="420" r="40.92" fill="url(#rim-hatch-studio)"/><circle cx="676" cy="420" r="29.04" fill="#131418" opacity=".85"/><circle cx="676" cy="420" r="10.56" fill="#DCD9D3"/><line x1="676.0" y1="408.1" x2="676.0" y2="383.0" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/><line x1="687.3" y1="416.3" x2="711.2" y2="408.6" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/><line x1="683.0" y1="429.6" x2="697.7" y2="449.9" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/><line x1="669.0" y1="429.6" x2="654.3" y2="449.9" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/><line x1="664.7" y1="416.3" x2="640.8" y2="408.6" stroke="#DCD9D3" stroke-width="8.6" stroke-linecap="round"/></g>
+</svg>

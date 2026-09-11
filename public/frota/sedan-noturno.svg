@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img">
+<defs>
+<linearGradient id="bg-sedan-noturno" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#15171B"/><stop offset=".6" stop-color="#0E1013"/><stop offset="1" stop-color="#08090B"/></linearGradient>
+<radialGradient id="spot-sedan-noturno" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#4C5561" stop-opacity="0.55"/><stop offset="1" stop-color="#4C5561" stop-opacity="0"/></radialGradient>
+<linearGradient id="body-sedan-noturno" x1=".1" y1="0" x2=".55" y2="1"><stop offset="0" stop-color="#E4E6E9"/><stop offset=".46" stop-color="#A9AEB6"/><stop offset="1" stop-color="#666C75"/></linearGradient>
+<linearGradient id="glass-sedan-noturno" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#2C323A"/><stop offset="1" stop-color="#171B21"/></linearGradient>
+<linearGradient id="shine-sedan-noturno" x1="0" y1="0" x2="1" y2=".25"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".42" stop-color="#fff" stop-opacity=".16"/><stop offset=".75" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="shadow-sedan-noturno" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000000" stop-opacity="0.65"/><stop offset=".68" stop-color="#000000" stop-opacity="0.18200000000000002"/><stop offset="1" stop-color="#000000" stop-opacity="0"/></radialGradient>
+<linearGradient id="rim-sedan-noturno" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0EEEA"/><stop offset="1" stop-color="#9B9993"/></linearGradient>
+</defs>
+<rect width="1000" height="620" fill="url(#bg-sedan-noturno)"/>
+<rect width="1000" height="620" fill="url(#spot-sedan-noturno)"/>
+<ellipse cx="502" cy="502" rx="392" ry="26" fill="url(#shadow-sedan-noturno)"/>
+<circle cx="276" cy="420" r="78" fill="#050608"/><circle cx="712" cy="420" r="78" fill="#050608"/>
+<path d="M 132 420 C 118 392, 122 356, 142 342 C 162 328, 200 318, 244 312 C 264 282, 294 252, 328 238 C 372 220, 458 215, 534 220 C 578 223, 610 237, 632 261 L 676 305 L 806 309 C 842 313, 862 324, 870 338 C 878 352, 878 384, 872 420 L 785 420 A 73 73 0 0 0 639 420 L 349 420 A 73 73 0 0 0 203 420 Z" fill="url(#body-sedan-noturno)"/>
+<path d="M 132 420 C 118 392, 122 356, 142 342 C 162 328, 200 318, 244 312 C 264 282, 294 252, 328 238 C 372 220, 458 215, 534 220 C 578 223, 610 237, 632 261 L 676 305 L 806 309 C 842 313, 862 324, 870 338 C 878 352, 878 384, 872 420 L 785 420 A 73 73 0 0 0 639 420 L 349 420 A 73 73 0 0 0 203 420 Z" fill="url(#shine-sedan-noturno)"/>
+<path d="M 282 306 C 296 277, 322 253, 350 244 C 380 234, 422 231, 452 232 L 452 302 Z" fill="url(#glass-sedan-noturno)"/><path d="M 468 232 C 528 234, 570 243, 594 263 L 630 302 L 468 302 Z" fill="url(#glass-sedan-noturno)"/>
+
+<path d="M 461 232 L 461 304" stroke="#3A3F47" stroke-width="5" opacity=".7"/>
+<path d="M 244 312 C 400 301, 580 301, 676 305 L 806 309" stroke="#3A3F47" stroke-width="3" opacity=".45" fill="none"/>
+<path d="M 330 338 L 478 336" stroke="#3A3F47" stroke-width="4" opacity=".28" stroke-linecap="round"/>
+<rect x="378" y="318" width="30" height="8" rx="4" fill="#3A3F47" opacity=".55"/><rect x="532" y="318" width="30" height="8" rx="4" fill="#3A3F47" opacity=".55"/>
+<rect x="134" y="352" width="52" height="21" rx="9" fill="#FFF6D8" opacity=".94"/>
+<rect x="842" y="340" width="30" height="28" rx="6" fill="#FF5A48" opacity=".92"/>
+<path d="M 286 310 l -27 -20 l 38 -2 Z" fill="#666C75"/>
+<path d="M 132 396 L 872 396" stroke="#000" stroke-width="2" opacity=".14"/>
+<g><circle cx="276" cy="420" r="66" fill="#0A0B0D"/><circle cx="276" cy="420" r="64.67999999999999" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2"/><circle cx="276" cy="420" r="40.92" fill="url(#rim-sedan-noturno)"/><circle cx="276" cy="420" r="29.04" fill="#0A0B0D" opacity=".85"/><circle cx="276" cy="420" r="10.56" fill="#F0EEEA"/><line x1="276.0" y1="408.1" x2="276.0" y2="383.0" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/><line x1="287.3" y1="416.3" x2="311.2" y2="408.6" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/><line x1="283.0" y1="429.6" x2="297.7" y2="449.9" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/><line x1="269.0" y1="429.6" x2="254.3" y2="449.9" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/><line x1="264.7" y1="416.3" x2="240.8" y2="408.6" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/></g><g><circle cx="712" cy="420" r="66" fill="#0A0B0D"/><circle cx="712" cy="420" r="64.67999999999999" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2"/><circle cx="712" cy="420" r="40.92" fill="url(#rim-sedan-noturno)"/><circle cx="712" cy="420" r="29.04" fill="#0A0B0D" opacity=".85"/><circle cx="712" cy="420" r="10.56" fill="#F0EEEA"/><line x1="712.0" y1="408.1" x2="712.0" y2="383.0" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/><line x1="723.3" y1="416.3" x2="747.2" y2="408.6" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/><line x1="719.0" y1="429.6" x2="733.7" y2="449.9" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/><line x1="705.0" y1="429.6" x2="690.3" y2="449.9" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/><line x1="700.7" y1="416.3" x2="676.8" y2="408.6" stroke="#F0EEEA" stroke-width="8.6" stroke-linecap="round"/></g>
+</svg>

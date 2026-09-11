@@ -1,0 +1,259 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   SISTEMA VISUAL DA ROGAN
+   Preto, branco quente e neutros sofisticados, com âmbar como cor de destaque
+   para os CTAs. O verde aparece só onde ele significa WhatsApp.
+   ========================================================================== */
+@theme {
+  /* --- neutros escuros --- */
+  --color-ink: #0b0b0d;
+  --color-ink-900: #121316;
+  --color-ink-800: #1b1d21;
+  --color-ink-700: #292c32;
+  --color-ink-600: #3c4047;
+  --color-ink-500: #575c65;
+
+  /* --- neutros claros (levemente quentes) ---
+     Os tons de texto foram escolhidos para passar em AA (4.5:1) sobre os
+     três fundos claros do site: white, paper (#faf9f6) e paper-alt (#f4f2ed). */
+  --color-mist-600: #65686f;
+  --color-mist-500: #8b8e95;
+  --color-mist-400: #b4b1ab;
+  --color-mist-300: #d9d5ce;
+  --color-mist-200: #e7e3dc;
+  --color-mist-100: #f2f0ea;
+  --color-paper: #faf9f6;
+  --color-paper-alt: #f4f2ed;
+
+  /* --- destaque (âmbar) --- */
+  --color-accent: #e39a2b;
+  --color-accent-600: #c87f16;
+  --color-accent-700: #8f580a;
+  --color-accent-200: #f7dfb4;
+  --color-accent-100: #fcf1dd;
+
+  /* --- WhatsApp ---
+     Mantemos o verde oficial (#25d366) nas superfícies, mas o texto em cima
+     dele é escuro: branco sobre esse verde dá apenas 1,98:1 de contraste,
+     enquanto o texto quase preto chega a 9,9:1. */
+  --color-whats: #25d366;
+  --color-whats-600: #1cb757;
+  --color-whats-700: #14803c;
+
+  /* --- estados --- */
+  --color-danger: #c0392b;
+  --color-danger-100: #fdeceb;
+  --color-success: #15723d;
+
+  /* --- tipografia --- */
+  --font-display: var(--font-archivo), 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans:
+    var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial,
+    sans-serif;
+
+  /* --- animações --- */
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in: fade-in 0.4s ease-out both;
+  --animate-slide-down: slide-down 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-scale-in: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Foco visível e consistente em todo o site (acessibilidade por teclado). */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-600);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-ink);
+  }
+
+  /* Campos de data: o ícone nativo fica legível nos dois fundos. */
+  input[type='date']::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.15s ease;
+  }
+
+  input[type='date']:hover::-webkit-calendar-picker-indicator,
+  input[type='date']:focus::-webkit-calendar-picker-indicator {
+    opacity: 1;
+  }
+
+  /* iOS não alinha o texto de input[type=date] sem isto. */
+  input[type='date'] {
+    min-height: 1.4em;
+  }
+}
+
+/* ==========================================================================
+   UTILITÁRIOS
+   ========================================================================== */
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1.25rem;
+
+  @media (min-width: 768px) {
+    padding-inline: 2rem;
+  }
+
+  @media (min-width: 1280px) {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Micro-rótulo em caixa alta usado acima dos títulos das seções. */
+@utility eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Texto lido só por leitores de tela. */
+@utility sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
+  &:focus {
+    position: fixed;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+/* Revelação suave ao entrar na viewport (ver useReveal). */
+@utility reveal {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &[data-revealed='true'] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ==========================================================================
+   ACESSIBILIDADE: respeitar quem pediu menos movimento
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

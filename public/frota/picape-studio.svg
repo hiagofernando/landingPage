@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img">
+<defs>
+<linearGradient id="bg-picape-studio" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8F6F3"/><stop offset=".6" stop-color="#EEEBE5"/><stop offset="1" stop-color="#DFDBD2"/></linearGradient>
+<radialGradient id="spot-picape-studio" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+<linearGradient id="body-picape-studio" x1=".1" y1="0" x2=".55" y2="1"><stop offset="0" stop-color="#4C5057"/><stop offset=".46" stop-color="#2B2E34"/><stop offset="1" stop-color="#15171B"/></linearGradient>
+<linearGradient id="glass-picape-studio" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#98A1AC"/><stop offset="1" stop-color="#59626D"/></linearGradient>
+<linearGradient id="shine-picape-studio" x1="0" y1="0" x2="1" y2=".25"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".42" stop-color="#fff" stop-opacity=".16"/><stop offset=".75" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="shadow-picape-studio" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1A1C20" stop-opacity="0.4"/><stop offset=".68" stop-color="#1A1C20" stop-opacity="0.11200000000000002"/><stop offset="1" stop-color="#1A1C20" stop-opacity="0"/></radialGradient>
+<linearGradient id="rim-picape-studio" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DCD9D3"/><stop offset="1" stop-color="#8B8984"/></linearGradient>
+</defs>
+<rect width="1000" height="620" fill="url(#bg-picape-studio)"/>
+<rect width="1000" height="620" fill="url(#spot-picape-studio)"/>
+<ellipse cx="508" cy="502" rx="398" ry="26" fill="url(#shadow-picape-studio)"/>
+<circle cx="282" cy="412" r="86" fill="#0D0E11"/><circle cx="722" cy="412" r="86" fill="#0D0E11"/>
+<path d="M 138 412 C 124 380, 128 344, 148 328 C 166 314, 200 304, 238 297 C 256 260, 282 228, 314 214 C 356 197, 438 194, 506 198 C 542 200, 566 212, 582 230 L 614 290 L 614 260 L 876 260 L 876 412 L 803 412 A 81 81 0 0 0 641 412 L 363 412 A 81 81 0 0 0 201 412 Z" fill="url(#body-picape-studio)"/>
+<path d="M 138 412 C 124 380, 128 344, 148 328 C 166 314, 200 304, 238 297 C 256 260, 282 228, 314 214 C 356 197, 438 194, 506 198 C 542 200, 566 212, 582 230 L 614 290 L 614 260 L 876 260 L 876 412 L 803 412 A 81 81 0 0 0 641 412 L 363 412 A 81 81 0 0 0 201 412 Z" fill="url(#shine-picape-studio)"/>
+<path d="M 280 288 C 294 256, 318 230, 346 221 C 374 211, 412 208, 440 209 L 440 284 Z" fill="url(#glass-picape-studio)"/><path d="M 456 209 C 498 211, 534 220, 554 238 L 582 284 L 456 284 Z" fill="url(#glass-picape-studio)"/>
+
+<path d="M 448 209 L 448 286" stroke="#0A0B0D" stroke-width="5" opacity=".7"/>
+<path d="M 614 268 L 868 268 L 868 314 L 614 314 Z" fill="#0D0E11" opacity=".55"/>
+<path d="M 238 297 C 370 285, 510 285, 614 292" stroke="#0A0B0D" stroke-width="3" opacity=".45" fill="none"/>
+<path d="M 322 322 L 452 320" stroke="#0A0B0D" stroke-width="4" opacity=".28" stroke-linecap="round"/>
+<rect x="368" y="302" width="32" height="8" rx="4" fill="#0A0B0D" opacity=".55"/>
+<rect x="140" y="334" width="52" height="23" rx="9" fill="#F1EDE0" opacity=".94"/>
+<rect x="846" y="326" width="30" height="28" rx="6" fill="#C4483C" opacity=".92"/>
+<path d="M 284 292 l -27 -20 l 38 -2 Z" fill="#15171B"/>
+<path d="M 136 380 L 876 380" stroke="#000" stroke-width="2" opacity=".14"/>
+<path d="M 202 412 L 874 412" stroke="#15171B" stroke-width="10" opacity=".45"/>
+<g><circle cx="282" cy="412" r="74" fill="#131418"/><circle cx="282" cy="412" r="72.52" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2"/><circle cx="282" cy="412" r="45.88" fill="url(#rim-picape-studio)"/><circle cx="282" cy="412" r="32.56" fill="#131418" opacity=".85"/><circle cx="282" cy="412" r="11.84" fill="#DCD9D3"/><line x1="282.0" y1="398.7" x2="282.0" y2="370.6" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/><line x1="294.7" y1="407.9" x2="321.4" y2="399.2" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/><line x1="289.8" y1="422.8" x2="306.4" y2="445.5" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/><line x1="274.2" y1="422.8" x2="257.6" y2="445.5" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/><line x1="269.3" y1="407.9" x2="242.6" y2="399.2" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/></g><g><circle cx="722" cy="412" r="74" fill="#131418"/><circle cx="722" cy="412" r="72.52" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2"/><circle cx="722" cy="412" r="45.88" fill="url(#rim-picape-studio)"/><circle cx="722" cy="412" r="32.56" fill="#131418" opacity=".85"/><circle cx="722" cy="412" r="11.84" fill="#DCD9D3"/><line x1="722.0" y1="398.7" x2="722.0" y2="370.6" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/><line x1="734.7" y1="407.9" x2="761.4" y2="399.2" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/><line x1="729.8" y1="422.8" x2="746.4" y2="445.5" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/><line x1="714.2" y1="422.8" x2="697.6" y2="445.5" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/><line x1="709.3" y1="407.9" x2="682.6" y2="399.2" stroke="#DCD9D3" stroke-width="9.6" stroke-linecap="round"/></g>
+</svg>
