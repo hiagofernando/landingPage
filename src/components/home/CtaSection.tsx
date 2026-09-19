@@ -13,7 +13,7 @@ export function CtaSection() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              'radial-gradient(55% 60% at 85% 40%, rgba(227,154,43,0.18) 0%, rgba(11,11,13,0) 70%)',
+              'radial-gradient(55% 60% at 85% 40%, rgba(59,158,255,0.2) 0%, rgba(10,25,48,0) 70%)',
           }}
         />
 

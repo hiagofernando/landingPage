@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { getActiveCampaign } from '@/data/campaigns';
 import { faqItems } from '@/data/faq';
-import { getFeaturedVehicles, getLowestDailyPrice } from '@/data/repository';
+import { getFeaturedVehicles, getLowestDailyPrice, getVehicles } from '@/data/repository';
 import { Hero } from '@/components/home/Hero';
 import { Highlights } from '@/components/home/Highlights';
 import { FleetPreview } from '@/components/home/FleetPreview';
@@ -28,15 +28,16 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  const [featured, lowestDailyPrice] = await Promise.all([
+  const [featured, allVehicles, lowestDailyPrice] = await Promise.all([
     getFeaturedVehicles(4),
+    getVehicles(),
     getLowestDailyPrice(),
   ]);
   const campaign = getActiveCampaign();
 
   return (
     <>
-      <Hero campaign={campaign} lowestDailyPrice={lowestDailyPrice} />
+      <Hero campaign={campaign} lowestDailyPrice={lowestDailyPrice} vehicles={allVehicles} />
 
       {/* Busca por período, sobreposta ao hero */}
       <section aria-label="Buscar carros por período" className="relative bg-paper">

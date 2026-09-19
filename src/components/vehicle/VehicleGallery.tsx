@@ -93,7 +93,7 @@ function GalleryArrow({ side, onClick }: { side: 'left' | 'right'; onClick: () =
       aria-label={side === 'left' ? 'Imagem anterior' : 'Próxima imagem'}
       className={cn(
         'absolute top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full',
-        'bg-paper/85 text-ink shadow-[0_4px_16px_rgba(11,11,13,0.18)] backdrop-blur-sm',
+        'bg-paper/85 text-ink shadow-[0_4px_16px_rgba(10,25,48,0.18)] backdrop-blur-sm',
         'transition-colors hover:bg-paper',
         side === 'left' ? 'left-3' : 'right-3',
       )}

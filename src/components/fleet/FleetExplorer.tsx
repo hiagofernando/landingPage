@@ -113,7 +113,7 @@ export function FleetExplorer({ vehicles }: FleetExplorerProps) {
       {/* ------------------------------- Período ------------------------------- */}
       <section
         aria-label="Filtrar por período"
-        className="rounded-2xl border border-mist-200 bg-white p-5 shadow-[0_14px_40px_-30px_rgba(11,11,13,0.5)] sm:p-6"
+        className="rounded-2xl border border-mist-200 bg-white p-5 shadow-[0_14px_40px_-30px_rgba(10,25,48,0.5)] sm:p-6"
       >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-6">
           <div className="lg:flex-1">

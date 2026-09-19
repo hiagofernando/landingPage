@@ -53,7 +53,7 @@ export function SearchBar({ tone = 'dark', initialRange }: SearchBarProps) {
       className={
         light
           ? 'rounded-2xl border border-ink-700 bg-ink-900 p-5 sm:p-6'
-          : 'rounded-2xl border border-mist-200 bg-white p-5 shadow-[0_18px_50px_-24px_rgba(11,11,13,0.28)] sm:p-6'
+          : 'rounded-2xl border border-mist-200 bg-white p-5 shadow-[0_18px_50px_-24px_rgba(10,25,48,0.28)] sm:p-6'
       }
     >
       <h2

@@ -80,7 +80,7 @@ export function VehicleBookingPanel({ vehicle, alternatives }: VehicleBookingPan
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-2xl border border-mist-200 bg-white p-5 shadow-[0_18px_50px_-32px_rgba(11,11,13,0.55)] sm:p-6">
+      <div className="rounded-2xl border border-mist-200 bg-white p-5 shadow-[0_18px_50px_-32px_rgba(10,25,48,0.55)] sm:p-6">
         {/* Preço de referência */}
         <div className="flex items-end justify-between gap-4 border-b border-mist-200 pb-5">
           <div>

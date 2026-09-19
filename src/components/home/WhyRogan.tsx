@@ -69,7 +69,7 @@ export function WhyRogan() {
               className="object-cover"
             />
           </div>
-          <div className="absolute -bottom-5 left-5 right-5 rounded-xl border border-mist-200 bg-white p-4 shadow-[0_16px_40px_-24px_rgba(11,11,13,0.5)] sm:left-8 sm:right-auto sm:max-w-xs">
+          <div className="absolute -bottom-5 left-5 right-5 rounded-xl border border-mist-200 bg-white p-4 shadow-[0_16px_40px_-24px_rgba(10,25,48,0.5)] sm:left-8 sm:right-auto sm:max-w-xs">
             <p className="font-display text-sm font-bold text-ink">
               Locadora de {siteConfig.city}-{siteConfig.state}
             </p>

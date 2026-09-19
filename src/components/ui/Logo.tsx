@@ -15,8 +15,8 @@ interface LogoProps {
  * LOGOTIPO PROVISÓRIO DA ROGAN.
  *
  * A empresa ainda não forneceu um logotipo definitivo. Esta é uma marca
- * tipográfica provisória: o monograma "R" com um ponto em âmbar, ao lado da
- * palavra ROGAN em tipografia pesada.
+ * tipográfica provisória: o monograma "R" com um ponto em azul (cor real da
+ * marca), ao lado da palavra ROGAN em tipografia pesada.
  *
  * Para trocar pelo logotipo oficial, substitua o conteúdo deste componente
  * (por exemplo, por uma tag <Image> apontando para o arquivo definitivo).
@@ -36,12 +36,12 @@ export function Logo({ tone = 'dark', asLink = true, className, showTagline }: L
           <path
             d="M5 20 L9.5 4h5.2a4.3 4.3 0 0 1 0 8.6h-3.4L15 20"
             fill="none"
-            stroke={tone === 'dark' ? '#FAF9F6' : '#0B0B0D'}
+            stroke={tone === 'dark' ? '#FAF9F6' : '#0A1930'}
             strokeWidth="2.4"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <circle cx="18.2" cy="18.4" r="1.9" fill="#E39A2B" />
+          <circle cx="18.2" cy="18.4" r="1.9" fill="#3B9EFF" />
         </svg>
       </span>
 

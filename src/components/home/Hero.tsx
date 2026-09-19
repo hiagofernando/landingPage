@@ -1,14 +1,15 @@
-import Image from 'next/image';
-import type { SeasonalCampaign } from '@/types';
+import type { SeasonalCampaign, Vehicle } from '@/types';
 import { siteConfig } from '@/config/site';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
 import { formatCurrencyCompact } from '@/lib/format';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight, MapPin, WhatsApp } from '@/components/ui/Icons';
+import { HeroCarousel } from './HeroCarousel';
 
 interface HeroProps {
   campaign: SeasonalCampaign;
   lowestDailyPrice: number | null;
+  vehicles: Vehicle[];
 }
 
 /**
@@ -16,8 +17,15 @@ interface HeroProps {
  * em datas comemorativas ele troca sozinho; fora delas usa o texto
  * institucional.
  */
-export function Hero({ campaign, lowestDailyPrice }: HeroProps) {
+export function Hero({ campaign, lowestDailyPrice, vehicles }: HeroProps) {
   const whatsappUrl = buildWhatsAppUrl(generalMessage(campaign.whatsappMessage ?? undefined));
+  const slides = vehicles
+    .filter((vehicle) => vehicle.photos.length > 0)
+    .map((vehicle) => ({
+      src: vehicle.photos[0].src,
+      alt: vehicle.photos[0].alt,
+      name: vehicle.name,
+    }));
 
   return (
     <section className="relative overflow-hidden bg-ink text-paper">
@@ -27,7 +35,7 @@ export function Hero({ campaign, lowestDailyPrice }: HeroProps) {
         className="pointer-events-none absolute inset-0 opacity-70"
         style={{
           background:
-            'radial-gradient(60% 55% at 78% 30%, rgba(227,154,43,0.16) 0%, rgba(11,11,13,0) 70%), radial-gradient(50% 45% at 12% 8%, rgba(255,255,255,0.07) 0%, rgba(11,11,13,0) 72%)',
+            'radial-gradient(60% 55% at 78% 30%, rgba(59,158,255,0.18) 0%, rgba(10,25,48,0) 70%), radial-gradient(50% 45% at 12% 8%, rgba(255,255,255,0.07) 0%, rgba(10,25,48,0) 72%)',
         }}
       />
 
@@ -94,21 +102,7 @@ export function Hero({ campaign, lowestDailyPrice }: HeroProps) {
           </dl>
         </div>
 
-        <div className="relative">
-          <div className="relative aspect-[16/11] overflow-hidden rounded-2xl border border-ink-800 sm:aspect-[16/10]">
-            <Image
-              src="/frota/suv-noturno.svg"
-              alt="Ilustração de um SUV, representando a frota da ROGAN"
-              fill
-              sizes="(min-width: 1024px) 44vw, 100vw"
-              priority
-              className="object-cover"
-            />
-          </div>
-          <p className="mt-3 text-center text-[0.6875rem] text-mist-500 lg:text-right">
-            Imagem ilustrativa. As fotos reais da frota entram aqui.
-          </p>
-        </div>
+        <HeroCarousel slides={slides} />
       </div>
     </section>
   );

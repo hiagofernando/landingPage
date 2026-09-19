@@ -12,12 +12,12 @@ const base =
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    'bg-accent text-ink hover:bg-accent-600 shadow-[0_1px_2px_rgba(11,11,13,0.12)] hover:shadow-[0_6px_20px_-6px_rgba(200,127,22,0.55)]',
-  dark: 'bg-ink text-paper hover:bg-ink-800 shadow-[0_1px_2px_rgba(11,11,13,0.18)]',
-  light: 'bg-paper text-ink hover:bg-white shadow-[0_1px_2px_rgba(11,11,13,0.12)]',
+    'bg-accent text-ink hover:bg-accent-600 shadow-[0_1px_2px_rgba(10,25,48,0.12)] hover:shadow-[0_6px_20px_-6px_rgba(43,140,232,0.55)]',
+  dark: 'bg-ink text-paper hover:bg-ink-800 shadow-[0_1px_2px_rgba(10,25,48,0.18)]',
+  light: 'bg-paper text-ink hover:bg-white shadow-[0_1px_2px_rgba(10,25,48,0.12)]',
   outline: 'border border-mist-300 bg-transparent text-ink hover:border-ink hover:bg-mist-100',
   ghost: 'bg-transparent text-ink hover:bg-mist-100',
-  whatsapp: 'bg-whats text-ink hover:bg-whats-600 shadow-[0_1px_2px_rgba(11,11,13,0.14)]',
+  whatsapp: 'bg-whats text-ink hover:bg-whats-600 shadow-[0_1px_2px_rgba(10,25,48,0.14)]',
 };
 
 const sizes: Record<ButtonSize, string> = {

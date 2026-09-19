@@ -108,7 +108,7 @@ export function Modal({ open, onClose, title, description, children, size = 'md'
         tabIndex={-1}
         className={cn(
           'animate-scale-in relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-3xl bg-paper',
-          'shadow-[0_-8px_40px_rgba(11,11,13,0.3)] sm:rounded-3xl sm:shadow-[0_24px_60px_rgba(11,11,13,0.35)]',
+          'shadow-[0_-8px_40px_rgba(10,25,48,0.3)] sm:rounded-3xl sm:shadow-[0_24px_60px_rgba(10,25,48,0.35)]',
           size === 'lg' ? 'sm:max-w-2xl' : 'sm:max-w-lg',
         )}
       >

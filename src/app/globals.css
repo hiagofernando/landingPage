@@ -2,17 +2,18 @@
 
 /* ==========================================================================
    SISTEMA VISUAL DA ROGAN
-   Preto, branco quente e neutros sofisticados, com âmbar como cor de destaque
-   para os CTAs. O verde aparece só onde ele significa WhatsApp.
+   Azul-marinho e azul vivo (cores reais da marca, tiradas do logo/banner do
+   Instagram), com branco quente e neutros sofisticados. O verde aparece só
+   onde ele significa WhatsApp.
    ========================================================================== */
 @theme {
-  /* --- neutros escuros --- */
-  --color-ink: #0b0b0d;
-  --color-ink-900: #121316;
-  --color-ink-800: #1b1d21;
-  --color-ink-700: #292c32;
-  --color-ink-600: #3c4047;
-  --color-ink-500: #575c65;
+  /* --- azul-marinho (fundo escuro / texto principal) --- */
+  --color-ink: #0a1930;
+  --color-ink-900: #0f2242;
+  --color-ink-800: #172f54;
+  --color-ink-700: #21406c;
+  --color-ink-600: #34578a;
+  --color-ink-500: #5573a0;
 
   /* --- neutros claros (levemente quentes) ---
      Os tons de texto foram escolhidos para passar em AA (4.5:1) sobre os
@@ -26,12 +27,12 @@
   --color-paper: #faf9f6;
   --color-paper-alt: #f4f2ed;
 
-  /* --- destaque (âmbar) --- */
-  --color-accent: #e39a2b;
-  --color-accent-600: #c87f16;
-  --color-accent-700: #8f580a;
-  --color-accent-200: #f7dfb4;
-  --color-accent-100: #fcf1dd;
+  /* --- destaque (azul vivo da marca) --- */
+  --color-accent: #3b9eff;
+  --color-accent-600: #2b8ce8;
+  --color-accent-700: #1d4ed8;
+  --color-accent-200: #bfddff;
+  --color-accent-100: #eaf3ff;
 
   /* --- WhatsApp ---
      Mantemos o verde oficial (#25d366) nas superfícies, mas o texto em cima

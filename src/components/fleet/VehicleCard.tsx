@@ -36,7 +36,7 @@ export function VehicleCard({ vehicle, range, priority }: VehicleCardProps) {
         'group flex flex-col overflow-hidden rounded-2xl border border-mist-200 bg-white',
         'transition-[transform,box-shadow,border-color] duration-300',
         availability.available
-          ? 'hover:-translate-y-1 hover:border-mist-300 hover:shadow-[0_20px_44px_-26px_rgba(11,11,13,0.4)]'
+          ? 'hover:-translate-y-1 hover:border-mist-300 hover:shadow-[0_20px_44px_-26px_rgba(10,25,48,0.4)]'
           : 'opacity-95',
       )}
     >
