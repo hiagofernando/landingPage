@@ -1,8 +1,8 @@
-import type { Vehicle, VehicleCategory } from '@/types';
+import type { Vehicle } from '@/types';
 
 /**
  * ============================================================================
- *  FROTA — MODELOS E PREÇO REAIS, ANO/CÂMBIO/FOTOS AINDA PLACEHOLDER
+ *  FROTA — MODELOS E PREÇO REAIS, ANO/CÂMBIO AINDA PLACEHOLDER
  * ============================================================================
  *  Confirmado pelo cliente:
  *   - Preço: diária fixa de R$150 para toda a frota, pacote semanal R$900 e
@@ -10,38 +10,49 @@ import type { Vehicle, VehicleCategory } from '@/types';
  *   - Marca e modelo de cada carro: lidos de uma montagem de posts do
  *     Instagram da ROGAN, em resolução alta o suficiente para ler o texto
  *     de cada card com segurança.
+ *   - Lista reduzida a propósito: só os 7 modelos abaixo têm imagem de
+ *     exemplo (ver `examplePhoto`). Os outros 8 modelos que apareciam na
+ *     montagem de posts (Siena EL, Palio Way, mais 2 Fox, Gol G6, 2x Palio
+ *     Fire, Voyage 1.6) foram removidos daqui por pedido do cliente — não
+ *     ficar com carro sem foto na versão de demonstração. Se algum deles
+ *     voltar à frota, é só reaproveitar os dados que estavam no histórico
+ *     do git deste arquivo.
  *
  *  AINDA NÃO confirmado pelo cliente (estimados por modelo, não pelo carro
  *  real/placa específico — podem estar errados):
  *   - `year` e `transmission`: chutados a partir do que é típico para cada
  *     geração/versão desses modelos no Brasil, não da unidade real da ROGAN.
  *   - `trunk`: capacidade de porta-malas de catálogo do modelo, não medida.
- *   - `photos`: continuam sendo as ilustrações SVG genéricas por categoria.
- *     As fotos da montagem do Instagram têm moldura/logo/texto por cima e
- *     baixa resolução — não dá pra usar como foto de carro no site. Pedir
- *     ao cliente as fotos originais (sem moldura) de cada carro.
+ *
+ *  FOTOS (`/public/frota/exemplos`): imagens geradas por IA usadas SÓ para a
+ *  versão de demonstração do site (por isso o `DemoNotice` continua ativo —
+ *  não desligar `NEXT_PUBLIC_DEMO_MODE` enquanto elas estiverem aqui). Não
+ *  são fotos dos carros reais da ROGAN: mostram o modelo certo, mas
+ *  zero-km, cor de catálogo e cidade genérica — nada disso bate com a
+ *  condição real de um carro popular usado de frota de locação em
+ *  Carpina-PE. Antes de tirar o site do modo demonstração, TROCAR TODAS
+ *  por fotos de celular dos carros reais.
  *
  *  Antes de considerar a frota 100% real:
  *    1. confirmar com o cliente ano e câmbio de cada carro listado abaixo;
- *    2. pedir as fotos originais de cada carro e trocar `photosFor(...)`
- *       pelos arquivos reais em `/public/frota`;
- *    3. desligar o aviso de demonstração com NEXT_PUBLIC_DEMO_MODE=false.
+ *    2. decidir se os 8 modelos removidos voltam à frota (e com que foto);
+ *    3. pedir as fotos reais de cada carro (celular, sem moldura) e trocar
+ *       `examplePhoto(...)` pelos arquivos reais em `/public/frota`;
+ *    4. desligar o aviso de demonstração com NEXT_PUBLIC_DEMO_MODE=false.
  *
  *  Campos obrigatórios estão descritos em `src/types/index.ts`.
  * ============================================================================
  */
 
-/** Ilustrações provisórias por categoria (substituir por fotos reais). */
-function photosFor(category: VehicleCategory, name: string) {
-  const file = category === 'utilitario' ? 'picape' : category;
+/**
+ * Imagem de exemplo gerada por IA (só para demonstração — ver comentário no
+ * topo do arquivo). NÃO é foto do carro real.
+ */
+function examplePhoto(file: string, name: string) {
   return [
     {
-      src: `/frota/${file}-studio.svg`,
-      alt: `Ilustração lateral representando o ${name}`,
-    },
-    {
-      src: `/frota/${file}-noturno.svg`,
-      alt: `Ilustração lateral do ${name} em fundo escuro`,
+      src: `/frota/exemplos/${file}.jpg`,
+      alt: `Imagem ilustrativa gerada por IA representando um ${name} — não é foto do veículo real da ROGAN`,
     },
   ];
 }
@@ -64,7 +75,7 @@ export const demoVehicles: Vehicle[] = [
     dailyPrice: 150,
     weeklyPrice: 900,
     monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Chevrolet Celta LT'),
+    photos: examplePhoto('chevrolet-celta-lt', 'Chevrolet Celta LT'),
     description:
       'Compacto simples e econômico, ótimo para o dia a dia dentro de Carpina e cidades vizinhas.',
     highlights: ['Baixo consumo', 'Fácil de estacionar', 'Ar-condicionado'],
@@ -74,56 +85,6 @@ export const demoVehicles: Vehicle[] = [
   },
   {
     id: 'veh-002',
-    slug: 'fiat-siena-el',
-    name: 'Fiat Siena EL',
-    brand: 'Fiat',
-    model: 'Siena EL',
-    year: 2007,
-    category: 'sedan',
-    transmission: 'manual',
-    fuel: 'flex',
-    seats: 5,
-    trunk: 500,
-    doors: 4,
-    airConditioning: true,
-    dailyPrice: 150,
-    weeklyPrice: 900,
-    monthlyPrice: 3000,
-    photos: photosFor('sedan', 'Fiat Siena EL'),
-    description:
-      'Sedã compacto com porta-malas grande, bom para quem viaja com bagagem ou trabalha com aplicativo.',
-    highlights: ['Porta-malas grande', 'Bom custo-benefício', 'Ar-condicionado'],
-    available: true,
-    status: 'ativo',
-    unavailablePeriods: [],
-  },
-  {
-    id: 'veh-003',
-    slug: 'fiat-palio-way',
-    name: 'Fiat Palio Way',
-    brand: 'Fiat',
-    model: 'Palio Way',
-    year: 2015,
-    category: 'hatch',
-    transmission: 'manual',
-    fuel: 'flex',
-    seats: 5,
-    trunk: 285,
-    doors: 4,
-    airConditioning: true,
-    dailyPrice: 150,
-    weeklyPrice: 900,
-    monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Fiat Palio Way'),
-    description:
-      'Visual mais robusto que o hatch comum, com suspensão preparada para rua ruim e estrada de paralelepípedo.',
-    highlights: ['Suspensão reforçada', 'Bom para estrada de terra', 'Ar-condicionado'],
-    available: true,
-    status: 'ativo',
-    unavailablePeriods: [],
-  },
-  {
-    id: 'veh-004',
     slug: 'volkswagen-fox-vermelho',
     name: 'Volkswagen Fox (vermelho)',
     brand: 'Volkswagen',
@@ -139,7 +100,7 @@ export const demoVehicles: Vehicle[] = [
     dailyPrice: 150,
     weeklyPrice: 900,
     monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Volkswagen Fox'),
+    photos: examplePhoto('volkswagen-fox-vermelho', 'Volkswagen Fox'),
     description:
       'Compacto alemão, ágil no trânsito e com boa dirigibilidade para quem roda bastante na cidade.',
     highlights: ['Ágil no trânsito', 'Bem revisado', 'Ar-condicionado'],
@@ -148,32 +109,7 @@ export const demoVehicles: Vehicle[] = [
     unavailablePeriods: [],
   },
   {
-    id: 'veh-005',
-    slug: 'volkswagen-fox-branco',
-    name: 'Volkswagen Fox (branco)',
-    brand: 'Volkswagen',
-    model: 'Fox',
-    year: 2016,
-    category: 'hatch',
-    transmission: 'manual',
-    fuel: 'flex',
-    seats: 5,
-    trunk: 262,
-    doors: 4,
-    airConditioning: true,
-    dailyPrice: 150,
-    weeklyPrice: 900,
-    monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Volkswagen Fox'),
-    description:
-      'Compacto alemão, ágil no trânsito e com boa dirigibilidade para quem roda bastante na cidade.',
-    highlights: ['Ágil no trânsito', 'Bem revisado', 'Ar-condicionado'],
-    available: true,
-    status: 'ativo',
-    unavailablePeriods: [],
-  },
-  {
-    id: 'veh-006',
+    id: 'veh-003',
     slug: 'ford-ka',
     name: 'Ford Ka',
     brand: 'Ford',
@@ -189,7 +125,7 @@ export const demoVehicles: Vehicle[] = [
     dailyPrice: 150,
     weeklyPrice: 900,
     monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Ford Ka'),
+    photos: examplePhoto('ford-ka', 'Ford Ka'),
     description:
       'Um dos compactos mais vendidos do país, simples de dirigir e com peças fáceis de encontrar.',
     highlights: ['Fácil de dirigir', 'Baixo consumo', 'Ar-condicionado'],
@@ -198,57 +134,7 @@ export const demoVehicles: Vehicle[] = [
     unavailablePeriods: [],
   },
   {
-    id: 'veh-007',
-    slug: 'volkswagen-voyage-1-6',
-    name: 'Volkswagen Voyage 1.6',
-    brand: 'Volkswagen',
-    model: 'Voyage 1.6',
-    year: 2017,
-    category: 'sedan',
-    transmission: 'manual',
-    fuel: 'flex',
-    seats: 5,
-    trunk: 460,
-    doors: 4,
-    airConditioning: true,
-    dailyPrice: 150,
-    weeklyPrice: 900,
-    monthlyPrice: 3000,
-    photos: photosFor('sedan', 'Volkswagen Voyage 1.6'),
-    description:
-      'Sedã com porta-malas amplo e motor 1.6, indicado para quem roda mais quilômetros ou viaja com mais bagagem.',
-    highlights: ['Motor 1.6', 'Porta-malas amplo', 'Ar-condicionado'],
-    available: true,
-    status: 'ativo',
-    unavailablePeriods: [],
-  },
-  {
-    id: 'veh-008',
-    slug: 'volkswagen-fox-prata',
-    name: 'Volkswagen Fox (prata)',
-    brand: 'Volkswagen',
-    model: 'Fox',
-    year: 2014,
-    category: 'hatch',
-    transmission: 'manual',
-    fuel: 'flex',
-    seats: 5,
-    trunk: 262,
-    doors: 4,
-    airConditioning: true,
-    dailyPrice: 150,
-    weeklyPrice: 900,
-    monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Volkswagen Fox'),
-    description:
-      'Compacto alemão, ágil no trânsito e com boa dirigibilidade para quem roda bastante na cidade.',
-    highlights: ['Ágil no trânsito', 'Bem revisado', 'Ar-condicionado'],
-    available: true,
-    status: 'ativo',
-    unavailablePeriods: [],
-  },
-  {
-    id: 'veh-009',
+    id: 'veh-004',
     slug: 'toyota-etios',
     name: 'Toyota Etios',
     brand: 'Toyota',
@@ -264,7 +150,7 @@ export const demoVehicles: Vehicle[] = [
     dailyPrice: 150,
     weeklyPrice: 900,
     monthlyPrice: 3000,
-    photos: photosFor('sedan', 'Toyota Etios'),
+    photos: examplePhoto('toyota-etios', 'Toyota Etios'),
     description:
       'Sedã espaçoso, com bom espaço interno para quem viaja em família ou com passageiros.',
     highlights: ['Espaço interno', 'Porta-malas grande', 'Ar-condicionado'],
@@ -273,7 +159,7 @@ export const demoVehicles: Vehicle[] = [
     unavailablePeriods: [],
   },
   {
-    id: 'veh-010',
+    id: 'veh-005',
     slug: 'fiat-uno-vivace',
     name: 'Fiat Uno Vivace',
     brand: 'Fiat',
@@ -289,7 +175,7 @@ export const demoVehicles: Vehicle[] = [
     dailyPrice: 150,
     weeklyPrice: 900,
     monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Fiat Uno Vivace'),
+    photos: examplePhoto('fiat-uno-vivace', 'Fiat Uno Vivace'),
     description: 'Compacto leve e econômico, ideal para uso urbano no dia a dia.',
     highlights: ['Baixo consumo', 'Fácil de manobrar', 'Ar-condicionado'],
     available: true,
@@ -297,32 +183,7 @@ export const demoVehicles: Vehicle[] = [
     unavailablePeriods: [],
   },
   {
-    id: 'veh-011',
-    slug: 'volkswagen-gol-g6',
-    name: 'Volkswagen Gol G6',
-    brand: 'Volkswagen',
-    model: 'Gol G6',
-    year: 2015,
-    category: 'hatch',
-    transmission: 'manual',
-    fuel: 'flex',
-    seats: 5,
-    trunk: 285,
-    doors: 4,
-    airConditioning: true,
-    dailyPrice: 150,
-    weeklyPrice: 900,
-    monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Volkswagen Gol G6'),
-    description:
-      'Um dos hatches mais populares do Brasil, com peças e manutenção fáceis de encontrar em Carpina.',
-    highlights: ['Peças fáceis de encontrar', 'Baixo consumo', 'Ar-condicionado'],
-    available: true,
-    status: 'ativo',
-    unavailablePeriods: [],
-  },
-  {
-    id: 'veh-012',
+    id: 'veh-006',
     slug: 'fiat-grand-siena',
     name: 'Fiat Grand Siena',
     brand: 'Fiat',
@@ -338,7 +199,7 @@ export const demoVehicles: Vehicle[] = [
     dailyPrice: 150,
     weeklyPrice: 900,
     monthlyPrice: 3000,
-    photos: photosFor('sedan', 'Fiat Grand Siena'),
+    photos: examplePhoto('fiat-grand-siena', 'Fiat Grand Siena'),
     description:
       'Sedã com porta-malas dos maiores da categoria, boa opção para viagem com bagagem.',
     highlights: ['Porta-malas grande', 'Confortável na estrada', 'Ar-condicionado'],
@@ -347,57 +208,7 @@ export const demoVehicles: Vehicle[] = [
     unavailablePeriods: [],
   },
   {
-    id: 'veh-013',
-    slug: 'fiat-palio-fire-preto',
-    name: 'Fiat Palio Fire (preto)',
-    brand: 'Fiat',
-    model: 'Palio Fire',
-    year: 2016,
-    category: 'hatch',
-    transmission: 'manual',
-    fuel: 'flex',
-    seats: 5,
-    trunk: 285,
-    doors: 4,
-    airConditioning: true,
-    dailyPrice: 150,
-    weeklyPrice: 900,
-    monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Fiat Palio Fire'),
-    description:
-      'Compacto simples e resistente, uma das opções mais econômicas da frota.',
-    highlights: ['Baixo custo de locação', 'Fácil de estacionar', 'Ar-condicionado'],
-    available: true,
-    status: 'ativo',
-    unavailablePeriods: [],
-  },
-  {
-    id: 'veh-014',
-    slug: 'fiat-palio-fire-branco',
-    name: 'Fiat Palio Fire (branco)',
-    brand: 'Fiat',
-    model: 'Palio Fire',
-    year: 2014,
-    category: 'hatch',
-    transmission: 'manual',
-    fuel: 'flex',
-    seats: 5,
-    trunk: 285,
-    doors: 4,
-    airConditioning: true,
-    dailyPrice: 150,
-    weeklyPrice: 900,
-    monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Fiat Palio Fire'),
-    description:
-      'Compacto simples e resistente, uma das opções mais econômicas da frota.',
-    highlights: ['Baixo custo de locação', 'Fácil de estacionar', 'Ar-condicionado'],
-    available: true,
-    status: 'ativo',
-    unavailablePeriods: [],
-  },
-  {
-    id: 'veh-015',
+    id: 'veh-007',
     slug: 'fiat-mobi',
     name: 'Fiat Mobi',
     brand: 'Fiat',
@@ -413,7 +224,7 @@ export const demoVehicles: Vehicle[] = [
     dailyPrice: 150,
     weeklyPrice: 900,
     monthlyPrice: 3000,
-    photos: photosFor('hatch', 'Fiat Mobi'),
+    photos: examplePhoto('fiat-mobi', 'Fiat Mobi'),
     description:
       'Compacto, econômico e fácil de estacionar. Boa escolha para quem vai rodar dentro de Carpina e nas cidades vizinhas no dia a dia.',
     highlights: ['Baixo consumo', 'Fácil de manobrar', 'Ar-condicionado'],
