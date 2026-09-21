@@ -47,11 +47,15 @@ import type { Vehicle } from '@/types';
 /**
  * Imagem de exemplo gerada por IA (só para demonstração — ver comentário no
  * topo do arquivo). NÃO é foto do carro real.
+ *
+ * Os arquivos são WebP gerados por `npm run otimizar-fotos`. Rode o mesmo
+ * script ao trocar por fotos reais: no Cloudflare o visitante baixa o arquivo
+ * exatamente como ele está em `public/`.
  */
 function examplePhoto(file: string, name: string) {
   return [
     {
-      src: `/frota/exemplos/${file}.jpg`,
+      src: `/frota/exemplos/${file}.webp`,
       alt: `Imagem ilustrativa gerada por IA representando um ${name} — não é foto do veículo real da ROGAN`,
     },
   ];

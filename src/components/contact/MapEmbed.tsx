@@ -1,5 +1,6 @@
 import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { MapPin, WhatsApp } from '@/components/ui/Icons';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
 
@@ -51,15 +52,15 @@ export function MapEmbed() {
           com você pelo WhatsApp.
         </p>
       </div>
-      <Button
+      <WhatsAppButton
         href={buildWhatsAppUrl(generalMessage('Gostaria de saber onde retirar o veículo.'))}
-        external
+        origem="mapa"
         variant="dark"
         size="sm"
         icon={<WhatsApp className="size-4 text-whats" />}
       >
         Combinar a retirada
-      </Button>
+      </WhatsAppButton>
     </div>
   );
 }

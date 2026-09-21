@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { DateRange, Vehicle } from '@/types';
+import { trackEvent } from '@/lib/analytics';
 import { Button } from '@/components/ui/Button';
 import type { ButtonSize, ButtonVariant } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -42,7 +43,11 @@ export function RentNowButton({
         fullWidth={fullWidth}
         className={className}
         disabled={disabled}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          // Abertura do formulário: é o denominador da taxa de conversão.
+          trackEvent('formulario_aberto', { veiculo: vehicle.slug });
+          setOpen(true);
+        }}
       >
         {label}
       </Button>

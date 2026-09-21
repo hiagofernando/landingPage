@@ -3,6 +3,7 @@
 import { cn } from '@/lib/cn';
 import { useScrolledPast } from '@/hooks/useScrolledPast';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
+import { trackEvent } from '@/lib/analytics';
 import { WhatsApp } from '@/components/ui/Icons';
 
 /**
@@ -20,6 +21,7 @@ export function WhatsAppFloatingButton() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Falar com a ROGAN no WhatsApp"
+        onClick={() => trackEvent('whatsapp_direto', { origem: 'flutuante' })}
         className={cn(
           'group fixed right-4 bottom-4 z-40 flex items-center gap-2.5 rounded-full bg-whats py-3 pr-4 pl-3.5 text-ink',
           'shadow-[0_8px_28px_-6px_rgba(37,211,102,0.6)] transition-all duration-300 hover:bg-whats-600',

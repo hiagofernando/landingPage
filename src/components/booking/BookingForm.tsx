@@ -7,6 +7,7 @@ import { checkAvailability } from '@/lib/availability';
 import { maskPhone } from '@/lib/format';
 import { calculateDays, calculateQuote } from '@/lib/pricing';
 import { buildWhatsAppUrl, bookingRequestMessage } from '@/lib/whatsapp';
+import { trackEvent } from '@/lib/analytics';
 import { hasErrors, validateBookingForm } from '@/lib/validation';
 import type { BookingFormErrors } from '@/lib/validation';
 import { Button } from '@/components/ui/Button';
@@ -59,11 +60,33 @@ export function BookingForm({ vehicle, initialRange, onSent }: BookingFormProps)
 
     if (hasErrors(validation) || blocked) {
       event.preventDefault();
+      // Saber ONDE as pessoas travam é metade do trabalho de melhorar o funil.
+      trackEvent('formulario_invalido', {
+        veiculo: vehicle.slug,
+        origem: blocked ? 'periodo_indisponivel' : 'campos_incompletos',
+      });
       // Leva o foco para o primeiro campo com erro.
       const firstInvalid = document.querySelector<HTMLElement>('[aria-invalid="true"]');
       firstInvalid?.focus();
       return;
     }
+
+    /**
+     * O passo mais importante do site. Registrado ANTES de a aba ir para o
+     * WhatsApp: se a pessoa não apertar enviar lá, a ROGAN ainda assim fica
+     * com o nome, o telefone e o carro para retomar o contato.
+     */
+    trackEvent(
+      'solicitacao_enviada',
+      {
+        veiculo: vehicle.slug,
+        dias: days,
+        valor: quote.total,
+        retirada: range.pickupDate || undefined,
+        devolucao: range.returnDate || undefined,
+      },
+      { nome: name, telefone: phone || undefined },
+    );
 
     setSent(true);
     onSent?.();
@@ -175,8 +198,9 @@ export function BookingForm({ vehicle, initialRange, onSent }: BookingFormProps)
           Continuar pelo WhatsApp
         </Button>
         <p className="text-center text-[0.6875rem] leading-relaxed text-mist-600">
-          Ao continuar, abrimos o WhatsApp com a mensagem já escrita. A solicitação é enviada para a
-          nossa equipe, que continua o atendimento e confirma a locação com você.
+          Ao continuar, abrimos o WhatsApp com a mensagem já escrita e registramos seu nome e
+          contato com a equipe da ROGAN, que usa esses dados apenas para falar com você sobre esta
+          locação.
         </p>
       </div>
     </div>

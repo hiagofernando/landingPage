@@ -3,6 +3,7 @@ import { siteConfig } from '@/config/site';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
 import { formatCurrencyCompact } from '@/lib/format';
 import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { ArrowRight, MapPin, WhatsApp } from '@/components/ui/Icons';
 import { HeroCarousel } from './HeroCarousel';
 
@@ -64,16 +65,16 @@ export function Hero({ campaign, lowestDailyPrice, vehicles }: HeroProps) {
             >
               {campaign.cta}
             </Button>
-            <Button
+            <WhatsAppButton
               href={whatsappUrl}
-              external
+              origem="hero"
               size="lg"
               variant="outline"
               icon={<WhatsApp className="size-5 text-whats" />}
               className="w-full border-ink-600 text-paper hover:border-paper hover:bg-ink-800 sm:w-auto"
             >
               Falar no WhatsApp
-            </Button>
+            </WhatsAppButton>
           </div>
 
           <dl className="mt-2 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">

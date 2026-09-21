@@ -7,6 +7,7 @@ import { cn } from '@/lib/cn';
 import { useScrolledPast } from '@/hooks/useScrolledPast';
 import { siteConfig } from '@/config/site';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
+import { trackEvent } from '@/lib/analytics';
 import { Button } from '@/components/ui/Button';
 import { Logo } from '@/components/ui/Logo';
 import { Close, Menu, WhatsApp } from '@/components/ui/Icons';
@@ -79,6 +80,7 @@ export function Header() {
               external
               variant="dark"
               size="sm"
+              onClick={() => trackEvent('whatsapp_direto', { origem: 'topo' })}
               icon={<WhatsApp className="size-4 text-whats" />}
             >
               Falar no WhatsApp
@@ -146,7 +148,10 @@ export function Header() {
               variant="whatsapp"
               size="lg"
               fullWidth
-              onClick={() => setMenuOpen(false)}
+              onClick={() => {
+                trackEvent('whatsapp_direto', { origem: 'menu_movel' });
+                setMenuOpen(false);
+              }}
               icon={<WhatsApp className="size-5" />}
             >
               Falar no WhatsApp

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getFormattedAddress, getOpeningHours, siteConfig } from '@/config/site';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
 import { Logo } from '@/components/ui/Logo';
+import { WhatsAppLink } from '@/components/shared/WhatsAppButton';
 import { Clock, Instagram, MapPin, WhatsApp } from '@/components/ui/Icons';
 
 const year = new Date().getFullYear();
@@ -47,10 +48,9 @@ export function Footer() {
           <h2 className="eyebrow text-mist-500">Contato</h2>
           <ul className="flex flex-col gap-3.5 text-sm">
             <li>
-              <a
+              <WhatsAppLink
                 href={buildWhatsAppUrl(generalMessage())}
-                target="_blank"
-                rel="noopener noreferrer"
+                origem="rodape"
                 className="inline-flex items-center gap-2.5 text-mist-300 transition-colors hover:text-accent"
               >
                 <WhatsApp className="size-4 shrink-0 text-whats" />
@@ -58,7 +58,7 @@ export function Footer() {
                   WhatsApp
                   <span className="ml-1.5 text-mist-500">{siteConfig.whatsapp.display}</span>
                 </span>
-              </a>
+              </WhatsAppLink>
             </li>
             <li>
               <a

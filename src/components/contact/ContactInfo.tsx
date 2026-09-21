@@ -1,5 +1,6 @@
 import { getFormattedAddress, getOpeningHours, siteConfig } from '@/config/site';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
+import { WhatsAppLink } from '@/components/shared/WhatsAppButton';
 import { Clock, Instagram, MapPin, WhatsApp } from '@/components/ui/Icons';
 
 /** Cartões de contato. Campos ainda não informados aparecem como pendentes. */
@@ -20,14 +21,13 @@ export function ContactInfo() {
             O canal principal de atendimento da {siteConfig.name}.
           </p>
         </div>
-        <a
+        <WhatsAppLink
           href={buildWhatsAppUrl(generalMessage())}
-          target="_blank"
-          rel="noopener noreferrer"
+          origem="cartao_contato"
           className="mt-auto font-display text-[0.9375rem] font-semibold text-ink underline underline-offset-4 transition-colors hover:text-accent-700"
         >
           {siteConfig.whatsapp.display}
-        </a>
+        </WhatsAppLink>
       </li>
 
       <li className="flex flex-col gap-3 rounded-2xl border border-mist-200 bg-white p-5">

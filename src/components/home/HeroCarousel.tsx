@@ -23,6 +23,12 @@ const AUTOPLAY_MS = 5000;
  * Pausa sozinho com `prefers-reduced-motion`, ao passar o mouse e com o
  * foco do teclado dentro do carrossel. Sem biblioteca externa — mesmo
  * espírito dos outros hooks do projeto (useScrolledPast, useReveal).
+ *
+ * Só monta a imagem atual e as duas vizinhas. Como os slides ficam
+ * empilhados dentro da mesma caixa visível, montar todos faria o navegador
+ * baixar a frota inteira antes de a página aparecer — no 4G isso é a
+ * diferença entre abrir e desistir. As vizinhas entram para que a troca
+ * continue instantânea.
  */
 export function HeroCarousel({ slides }: HeroCarouselProps) {
   const [index, setIndex] = useState(0);
@@ -44,6 +50,13 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
   const current = slides[index];
   const goTo = (next: number) => setIndex(((next % count) + count) % count);
 
+  /** true para o slide atual e para os imediatamente antes e depois. */
+  const isNearby = (slideIndex: number) => {
+    const distance = Math.abs(slideIndex - index);
+    // `count - distance` cobre a volta do último para o primeiro.
+    return Math.min(distance, count - distance) <= 1;
+  };
+
   return (
     <div
       role="region"
@@ -60,19 +73,21 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
       }}
     >
       <div className="relative aspect-[16/11] overflow-hidden rounded-2xl border border-ink-800 sm:aspect-[16/10]">
-        {slides.map((slide, slideIndex) => (
-          <Image
-            key={slide.src}
-            src={slide.src}
-            alt={slide.alt}
-            fill
-            sizes="(min-width: 1024px) 44vw, 100vw"
-            priority={slideIndex === 0}
-            className="object-cover transition-opacity duration-700 ease-out"
-            style={{ opacity: slideIndex === index ? 1 : 0 }}
-            aria-hidden={slideIndex !== index}
-          />
-        ))}
+        {slides.map((slide, slideIndex) =>
+          isNearby(slideIndex) ? (
+            <Image
+              key={slide.src}
+              src={slide.src}
+              alt={slide.alt}
+              fill
+              sizes="(min-width: 1024px) 44vw, 100vw"
+              priority={slideIndex === 0}
+              className="object-cover transition-opacity duration-700 ease-out"
+              style={{ opacity: slideIndex === index ? 1 : 0 }}
+              aria-hidden={slideIndex !== index}
+            />
+          ) : null,
+        )}
 
         {count > 1 && (
           <>
@@ -111,7 +126,10 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
         )}
       </div>
 
-      <p className="mt-3 text-center text-[0.6875rem] text-mist-500 lg:text-right" aria-live="polite">
+      <p
+        className="mt-3 text-center text-[0.6875rem] text-mist-500 lg:text-right"
+        aria-live="polite"
+      >
         Imagem ilustrativa do {current.name} — fotos reais da frota entram aqui.
       </p>
     </div>

@@ -23,7 +23,13 @@ import {
   resolveWindow,
 } from '@/data/campaigns';
 import { bookingRequestMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
-import { fleetUrl, vehicleUrl } from '@/lib/urls';
+import {
+  DEFAULT_FLEET_FILTERS,
+  fleetQuery,
+  fleetUrl,
+  readFleetFilters,
+  vehicleUrl,
+} from '@/lib/urls';
 import { demoVehicles } from '@/data/vehicles';
 import type { Vehicle } from '@/types';
 
@@ -294,6 +300,50 @@ describe('links que preservam o período', () => {
 
   it('ignora datas inválidas', () => {
     assert.equal(vehicleUrl('x', { pickupDate: '2026-02-30', returnDate: '' }), '/frota/x');
+  });
+});
+
+describe('filtros da frota na URL', () => {
+  const semPeriodo = { pickupDate: '', returnDate: '' };
+
+  it('sem filtros, não suja a URL', () => {
+    assert.equal(fleetQuery(semPeriodo, DEFAULT_FLEET_FILTERS), '');
+  });
+
+  it('escreve só o que difere do padrão', () => {
+    const query = fleetQuery(semPeriodo, { ...DEFAULT_FLEET_FILTERS, category: 'sedan' });
+    assert.equal(query, 'categoria=sedan');
+  });
+
+  it('leva período e filtros juntos', () => {
+    const query = fleetQuery(
+      { pickupDate: '2026-07-01', returnDate: '2026-07-08' },
+      { ...DEFAULT_FLEET_FILTERS, category: 'sedan', onlyAvailable: false },
+    );
+    assert.equal(query, 'retirada=2026-07-01&devolucao=2026-07-08&categoria=sedan&disponiveis=0');
+  });
+
+  it('lê de volta exatamente o que escreveu', () => {
+    const original = {
+      ...DEFAULT_FLEET_FILTERS,
+      category: 'hatch' as const,
+      transmission: 'automatico' as const,
+      fuel: 'diesel' as const,
+      onlyAvailable: false,
+    };
+    const lido = readFleetFilters(new URLSearchParams(fleetQuery(semPeriodo, original)));
+    assert.deepEqual(lido, original);
+  });
+
+  it('cai no padrão quando a URL traz valor inventado', () => {
+    const lido = readFleetFilters(
+      new URLSearchParams('categoria=foguete&cambio=turbina&combustivel=querosene'),
+    );
+    assert.deepEqual(lido, DEFAULT_FLEET_FILTERS);
+  });
+
+  it('URL vazia devolve o padrão', () => {
+    assert.deepEqual(readFleetFilters(new URLSearchParams('')), DEFAULT_FLEET_FILTERS);
   });
 });
 

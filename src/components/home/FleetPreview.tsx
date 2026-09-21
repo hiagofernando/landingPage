@@ -15,6 +15,9 @@ export function FleetPreview({ vehicles, range }: FleetPreviewProps) {
     <section id="frota" aria-labelledby="frota-titulo" className="bg-paper-alt">
       <div className="container-page py-16 lg:py-24">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          {/* O texto abaixo descreve a frota real de `src/data/vehicles.ts`:
+              hoje são compactos e sedãs. Prometer picape ou SUV aqui é
+              prometer carro que a ROGAN não tem. */}
           <SectionHeading
             eyebrow="Nossa frota"
             title={
@@ -22,7 +25,7 @@ export function FleetPreview({ vehicles, range }: FleetPreviewProps) {
                 Carros para o dia a dia, para o trabalho e para a estrada
               </span>
             }
-            description="Do compacto econômico à picape de cabine dupla. Escolha pelo que você precisa: lugares, porta-malas, câmbio e consumo."
+            description="Do compacto econômico ao sedã com porta-malas grande. Escolha pelo que você precisa: lugares, espaço para bagagem e consumo."
           />
           <span className="hidden shrink-0 sm:block">
             <Button

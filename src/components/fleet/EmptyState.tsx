@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { WhatsApp } from '@/components/ui/Icons';
 import { buildWhatsAppUrl, noResultsMessage } from '@/lib/whatsapp';
 
@@ -47,14 +47,14 @@ export function EmptyState({
 
       <div className="flex flex-col gap-2.5 sm:flex-row">
         {action}
-        <Button
+        <WhatsAppButton
           href={buildWhatsAppUrl(noResultsMessage(pickupDate, returnDate))}
-          external
+          origem="sem_resultado"
           variant="whatsapp"
           icon={<WhatsApp className="size-4" />}
         >
           Falar com a ROGAN
-        </Button>
+        </WhatsAppButton>
       </div>
     </div>
   );

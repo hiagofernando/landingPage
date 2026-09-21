@@ -1,7 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type {
   DateRange,
   FleetFilters,
@@ -16,6 +16,8 @@ import { pluralizeDays } from '@/lib/dates';
 import { calculateDays } from '@/lib/pricing';
 import { hasErrors, validateDateRange } from '@/lib/validation';
 import type { DateRangeErrors } from '@/lib/validation';
+import { trackEvent } from '@/lib/analytics';
+import { DEFAULT_FLEET_FILTERS, fleetQuery, readFleetFilters } from '@/lib/urls';
 import { cn } from '@/lib/cn';
 import { useDateRangeParams } from '@/hooks/useDateRangeParams';
 import { Button } from '@/components/ui/Button';
@@ -28,12 +30,7 @@ interface FleetExplorerProps {
   vehicles: Vehicle[];
 }
 
-const DEFAULT_FILTERS: FleetFilters = {
-  category: 'todas',
-  transmission: 'todos',
-  fuel: 'todos',
-  onlyAvailable: true,
-};
+const DEFAULT_FILTERS = DEFAULT_FLEET_FILTERS;
 
 /**
  * Página da frota: período + filtros + resultados.
@@ -42,9 +39,13 @@ const DEFAULT_FILTERS: FleetFilters = {
  */
 export function FleetExplorer({ vehicles }: FleetExplorerProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const paramsRange = useDateRangeParams();
   const [range, setRange] = useState<DateRange>(paramsRange);
-  const [filters, setFilters] = useState<FleetFilters>(DEFAULT_FILTERS);
+  // Lido uma única vez: daqui em diante quem manda na URL é o estado.
+  const [filters, setFilters] = useState<FleetFilters>(() =>
+    readFleetFilters(new URLSearchParams(searchParams.toString())),
+  );
   const [showFilters, setShowFilters] = useState(false);
 
   // Os erros são derivados do período: calcular na renderização evita um
@@ -57,16 +58,21 @@ export function FleetExplorer({ vehicles }: FleetExplorerProps) {
   const hasRange = Boolean(range.pickupDate && range.returnDate && !hasErrors(errors));
   const days = calculateDays(range.pickupDate || '', range.returnDate || '');
 
-  // Mantém a URL em sincronia com o período escolhido, para o link ser
-  // compartilhável e a seleção sobreviver à navegação.
+  // Mantém a URL em sincronia com o período E com os filtros, para o link ser
+  // compartilhável e a seleção sobreviver à navegação. Sem os filtros aqui,
+  // quem mandasse "olha esse sedã" perdia o filtro no caminho.
   useEffect(() => {
-    const params = new URLSearchParams();
-    if (range.pickupDate && !errors.pickupDate) params.set('retirada', range.pickupDate);
-    if (range.returnDate && !errors.returnDate) params.set('devolucao', range.returnDate);
-
-    const query = params.toString();
+    // Data inválida não vai para a URL: link compartilhado não pode carregar
+    // meia data digitada.
+    const query = fleetQuery(
+      {
+        pickupDate: errors.pickupDate ? '' : range.pickupDate,
+        returnDate: errors.returnDate ? '' : range.returnDate,
+      },
+      filters,
+    );
     router.replace(query ? `/frota?${query}` : '/frota', { scroll: false });
-  }, [range.pickupDate, range.returnDate, errors.pickupDate, errors.returnDate, router]);
+  }, [range.pickupDate, range.returnDate, errors.pickupDate, errors.returnDate, filters, router]);
 
   const categories = useMemo(
     () => [...new Set(vehicles.map((vehicle) => vehicle.category))],
@@ -98,6 +104,28 @@ export function FleetExplorer({ vehicles }: FleetExplorerProps) {
       return true;
     });
   }, [vehicles, filters, hasRange, range.pickupDate, range.returnDate]);
+
+  /**
+   * Período pesquisado sem nenhum carro livre.
+   *
+   * É a informação mais acionável que o site produz: diz à ROGAN quais datas
+   * o mercado está pedindo e a frota não cobre. A chave evita repetir o
+   * mesmo evento a cada tecla digitada.
+   */
+  const lastReportedSearch = useRef<string | null>(null);
+  useEffect(() => {
+    if (!hasRange || results.length > 0) return;
+
+    const key = `${range.pickupDate}:${range.returnDate}`;
+    if (lastReportedSearch.current === key) return;
+    lastReportedSearch.current = key;
+
+    trackEvent('busca_sem_resultado', {
+      retirada: range.pickupDate || undefined,
+      devolucao: range.returnDate || undefined,
+      dias: days,
+    });
+  }, [hasRange, results.length, range.pickupDate, range.returnDate, days]);
 
   const activeFilterCount =
     (filters.category !== 'todas' ? 1 : 0) +
@@ -189,43 +217,54 @@ export function FleetExplorer({ vehicles }: FleetExplorerProps) {
             showFilters ? 'flex' : 'hidden lg:flex',
           )}
         >
-          <FilterSelect
-            label="Categoria"
-            value={filters.category}
-            onChange={(value) =>
-              setFilters((prev) => ({ ...prev, category: value as VehicleCategory | 'todas' }))
-            }
-            options={[
-              { value: 'todas', label: 'Todas' },
-              ...categories.map((category) => ({
-                value: category,
-                label: CATEGORY_LABELS[category],
-              })),
-            ]}
-          />
-          <FilterSelect
-            label="Câmbio"
-            value={filters.transmission}
-            onChange={(value) =>
-              setFilters((prev) => ({ ...prev, transmission: value as Transmission | 'todos' }))
-            }
-            options={[
-              { value: 'todos', label: 'Todos' },
-              ...transmissions.map((transmission) => ({
-                value: transmission,
-                label: TRANSMISSION_LABELS[transmission],
-              })),
-            ]}
-          />
-          <FilterSelect
-            label="Combustível"
-            value={filters.fuel}
-            onChange={(value) => setFilters((prev) => ({ ...prev, fuel: value as Fuel | 'todos' }))}
-            options={[
-              { value: 'todos', label: 'Todos' },
-              ...fuels.map((fuel) => ({ value: fuel, label: FUEL_LABELS[fuel] })),
-            ]}
-          />
+          {/* Um filtro com uma opção só não filtra nada: hoje toda a frota é
+              manual e flex, então câmbio e combustível sumiriam da tela. Eles
+              voltam sozinhos quando a frota tiver variedade de verdade. */}
+          {categories.length > 1 && (
+            <FilterSelect
+              label="Categoria"
+              value={filters.category}
+              onChange={(value) =>
+                setFilters((prev) => ({ ...prev, category: value as VehicleCategory | 'todas' }))
+              }
+              options={[
+                { value: 'todas', label: 'Todas' },
+                ...categories.map((category) => ({
+                  value: category,
+                  label: CATEGORY_LABELS[category],
+                })),
+              ]}
+            />
+          )}
+          {transmissions.length > 1 && (
+            <FilterSelect
+              label="Câmbio"
+              value={filters.transmission}
+              onChange={(value) =>
+                setFilters((prev) => ({ ...prev, transmission: value as Transmission | 'todos' }))
+              }
+              options={[
+                { value: 'todos', label: 'Todos' },
+                ...transmissions.map((transmission) => ({
+                  value: transmission,
+                  label: TRANSMISSION_LABELS[transmission],
+                })),
+              ]}
+            />
+          )}
+          {fuels.length > 1 && (
+            <FilterSelect
+              label="Combustível"
+              value={filters.fuel}
+              onChange={(value) =>
+                setFilters((prev) => ({ ...prev, fuel: value as Fuel | 'todos' }))
+              }
+              options={[
+                { value: 'todos', label: 'Todos' },
+                ...fuels.map((fuel) => ({ value: fuel, label: FUEL_LABELS[fuel] })),
+              ]}
+            />
+          )}
 
           <label className="flex cursor-pointer items-center gap-2.5 py-2 text-sm text-ink select-none sm:ml-auto">
             <input

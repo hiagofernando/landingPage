@@ -12,7 +12,7 @@ import type { DateRangeErrors } from '@/lib/validation';
 import { buildWhatsAppUrl, vehicleInterestMessage } from '@/lib/whatsapp';
 import { cn } from '@/lib/cn';
 import { useDateRangeParams } from '@/hooks/useDateRangeParams';
-import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { Alert, Check, WhatsApp } from '@/components/ui/Icons';
 import { DateRangePicker } from '@/components/search/DateRangePicker';
 import { RentNowButton } from '@/components/booking/RentNowButton';
@@ -203,16 +203,17 @@ export function VehicleBookingPanel({ vehicle, alternatives }: VehicleBookingPan
             disabled={!availability.available}
             label={availability.available ? 'Alugar agora' : 'Indisponível para estas datas'}
           />
-          <Button
+          <WhatsAppButton
             href={buildWhatsAppUrl(vehicleInterestMessage(vehicle))}
-            external
+            origem="painel_veiculo"
+            veiculo={vehicle.slug}
             variant="outline"
             size="lg"
             fullWidth
             icon={<WhatsApp className="size-4 text-whats-700" />}
           >
             Tirar dúvida no WhatsApp
-          </Button>
+          </WhatsAppButton>
         </div>
       </div>
 

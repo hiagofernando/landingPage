@@ -35,6 +35,10 @@ export default async function HomePage() {
   ]);
   const campaign = getActiveCampaign();
 
+  // Foto da seção "Por que a ROGAN": um carro de verdade da frota. Prefere um
+  // sedã, que enquadra melhor no recorte 4/3 da seção.
+  const showcase = allVehicles.find((vehicle) => vehicle.category === 'sedan') ?? allVehicles[0];
+
   return (
     <>
       <Hero campaign={campaign} lowestDailyPrice={lowestDailyPrice} vehicles={allVehicles} />
@@ -51,7 +55,7 @@ export default async function HomePage() {
       <Highlights />
       <FleetPreview vehicles={featured} />
       <HowItWorks />
-      <WhyRogan />
+      <WhyRogan photo={showcase?.photos[0]} />
 
       {/* Perguntas frequentes (resumo) */}
       <section aria-labelledby="faq-home" className="bg-paper-alt">

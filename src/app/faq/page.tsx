@@ -5,7 +5,7 @@ import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { FaqAccordion } from '@/components/faq/FaqAccordion';
 import { CtaSection } from '@/components/home/CtaSection';
-import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { WhatsApp } from '@/components/ui/Icons';
 
 export const metadata: Metadata = {
@@ -65,15 +65,15 @@ export default function FaqPage() {
                 Manda mensagem que a gente responde — é gente de verdade do outro lado.
               </p>
             </div>
-            <Button
+            <WhatsAppButton
               href={buildWhatsAppUrl(generalMessage('Tenho uma dúvida sobre a locação.'))}
-              external
+              origem="faq"
               variant="whatsapp"
               className="shrink-0"
               icon={<WhatsApp className="size-4" />}
             >
               Falar no WhatsApp
-            </Button>
+            </WhatsAppButton>
           </div>
         </div>
       </section>

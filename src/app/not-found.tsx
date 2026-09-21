@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { WhatsApp } from '@/components/ui/Icons';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
 
@@ -18,15 +19,15 @@ export default function NotFound() {
           <Button href="/frota" size="lg">
             Ver carros disponíveis
           </Button>
-          <Button
+          <WhatsAppButton
             href={buildWhatsAppUrl(generalMessage())}
-            external
+            origem="pagina_404"
             size="lg"
             variant="outline"
             icon={<WhatsApp className="size-5 text-whats-700" />}
           >
             Falar no WhatsApp
-          </Button>
+          </WhatsAppButton>
         </div>
       </div>
     </section>

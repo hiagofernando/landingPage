@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { HowItWorks } from '@/components/home/HowItWorks';
 import { CtaSection } from '@/components/home/CtaSection';
 import { SearchBar } from '@/components/search/SearchBar';
-import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { Alert, Check, WhatsApp } from '@/components/ui/Icons';
 
 export const metadata: Metadata = {
@@ -75,16 +75,16 @@ export default function HowItWorksPage() {
                 </li>
               ))}
             </ul>
-            <Button
+            <WhatsAppButton
               href={buildWhatsAppUrl(generalMessage())}
-              external
+              origem="como_funciona"
               variant="whatsapp"
               size="lg"
               className="mt-8"
               icon={<WhatsApp className="size-5" />}
             >
               Falar no WhatsApp
-            </Button>
+            </WhatsAppButton>
           </div>
 
           <div className="flex flex-col gap-4">

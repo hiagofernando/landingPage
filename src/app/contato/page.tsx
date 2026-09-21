@@ -9,6 +9,7 @@ import { FaqAccordion } from '@/components/faq/FaqAccordion';
 import { CtaSection } from '@/components/home/CtaSection';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { ArrowRight, WhatsApp } from '@/components/ui/Icons';
 
 export const metadata: Metadata = {
@@ -31,15 +32,15 @@ export default function ContactPage() {
         description={`O WhatsApp é o nosso canal principal: é por lá que confirmamos a disponibilidade, combinamos a retirada e tiramos qualquer dúvida sobre a locação em ${siteConfig.city}-${siteConfig.state}.`}
         breadcrumbs={[{ label: 'Início', href: '/' }, { label: 'Contato' }]}
       >
-        <Button
+        <WhatsAppButton
           href={buildWhatsAppUrl(generalMessage())}
-          external
+          origem="pagina_contato"
           variant="whatsapp"
           size="lg"
           icon={<WhatsApp className="size-5" />}
         >
           Falar no WhatsApp
-        </Button>
+        </WhatsAppButton>
       </PageHeader>
 
       <section className="bg-paper">

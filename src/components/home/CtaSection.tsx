@@ -1,6 +1,7 @@
 import { siteConfig } from '@/config/site';
 import { buildWhatsAppUrl, generalMessage } from '@/lib/whatsapp';
 import { Button } from '@/components/ui/Button';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { ArrowRight, WhatsApp } from '@/components/ui/Icons';
 
 /** Bloco de conversão final, logo antes do rodapé. */
@@ -33,16 +34,16 @@ export function CtaSection() {
           </div>
 
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:shrink-0 lg:flex-col xl:flex-row">
-            <Button
+            <WhatsAppButton
               href={buildWhatsAppUrl(generalMessage())}
-              external
+              origem="cta_final"
               size="lg"
               variant="whatsapp"
               icon={<WhatsApp className="size-5" />}
               className="w-full sm:w-auto"
             >
               Falar com a {siteConfig.name} no WhatsApp
-            </Button>
+            </WhatsAppButton>
             <Button
               href="/frota"
               size="lg"

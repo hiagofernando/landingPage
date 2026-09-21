@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import type { VehiclePhoto } from '@/types';
 import { siteConfig } from '@/config/site';
 import { Check } from '@/components/ui/Icons';
 import { SectionHeading } from '@/components/shared/SectionHeading';
@@ -23,7 +24,15 @@ const reasons = [
   },
 ];
 
-export function WhyRogan() {
+interface WhyRoganProps {
+  /**
+   * Foto de um carro da frota de verdade. Vem da página para que esta seção
+   * não precise buscar dados sozinha — mesmo padrão do Hero e do FleetPreview.
+   */
+  photo?: VehiclePhoto;
+}
+
+export function WhyRogan({ photo }: WhyRoganProps) {
   return (
     <section aria-labelledby="por-que-titulo" className="bg-paper">
       <div className="container-page grid gap-12 py-16 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-24">
@@ -60,14 +69,16 @@ export function WhyRogan() {
 
         <Reveal className="relative">
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-mist-200 bg-mist-100">
-            <Image
-              src="/frota/sedan-studio.svg"
-              alt="Ilustração de um sedã representando os veículos da ROGAN"
-              fill
-              sizes="(min-width: 1024px) 46vw, 100vw"
-              loading="lazy"
-              className="object-cover"
-            />
+            {photo && (
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                sizes="(min-width: 1024px) 46vw, 100vw"
+                loading="lazy"
+                className="object-cover"
+              />
+            )}
           </div>
           <div className="absolute -bottom-5 left-5 right-5 rounded-xl border border-mist-200 bg-white p-4 shadow-[0_16px_40px_-24px_rgba(10,25,48,0.5)] sm:left-8 sm:right-auto sm:max-w-xs">
             <p className="font-display text-sm font-bold text-ink">
