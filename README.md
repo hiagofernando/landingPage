@@ -14,6 +14,8 @@ O site **não** confirma reservas nem processa pagamentos. O que sai daqui é um
 **solicitação de locação** — isso está dito de forma explícita em todos os
 pontos do fluxo.
 
+O que mudou ao longo do tempo está no [CHANGELOG.md](CHANGELOG.md).
+
 ---
 
 ## 1. Rodando o projeto
