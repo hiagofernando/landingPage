@@ -20,6 +20,8 @@ import { trackEvent } from '@/lib/analytics';
 import { DEFAULT_FLEET_FILTERS, fleetQuery, readFleetFilters } from '@/lib/urls';
 import { cn } from '@/lib/cn';
 import { useDateRangeParams } from '@/hooks/useDateRangeParams';
+import { useFleetStatus } from '@/hooks/useFleetStatus';
+import { applyFleetStatus } from '@/lib/negotiations';
 import { Button } from '@/components/ui/Button';
 import { Close, Filter } from '@/components/ui/Icons';
 import { DateRangePicker } from '@/components/search/DateRangePicker';
@@ -84,6 +86,10 @@ export function FleetExplorer({ vehicles }: FleetExplorerProps) {
   );
   const fuels = useMemo(() => [...new Set(vehicles.map((vehicle) => vehicle.fuel))], [vehicles]);
 
+  // Períodos que a equipe fechou pelo WhatsApp contam como ocupados, senão o
+  // filtro "apenas disponíveis" mostraria carro que já está locado.
+  const fleetStatus = useFleetStatus();
+
   const results = useMemo(() => {
     return vehicles.filter((vehicle) => {
       if (filters.category !== 'todas' && vehicle.category !== filters.category) return false;
@@ -94,7 +100,7 @@ export function FleetExplorer({ vehicles }: FleetExplorerProps) {
 
       if (filters.onlyAvailable) {
         const availability = checkAvailability(
-          vehicle,
+          applyFleetStatus(vehicle, fleetStatus),
           hasRange ? range.pickupDate : undefined,
           hasRange ? range.returnDate : undefined,
         );
@@ -103,7 +109,7 @@ export function FleetExplorer({ vehicles }: FleetExplorerProps) {
 
       return true;
     });
-  }, [vehicles, filters, hasRange, range.pickupDate, range.returnDate]);
+  }, [vehicles, filters, hasRange, range.pickupDate, range.returnDate, fleetStatus]);
 
   /**
    * Período pesquisado sem nenhum carro livre.

@@ -1,8 +1,11 @@
+import { getKV } from '@/lib/cloudflare';
+import { asNumber, asText, readJsonObject } from '@/lib/http';
+
 /**
  * ============================================================================
  *  RECEPTOR DE EVENTOS DO FUNIL E DE SOLICITAÇÕES
  * ============================================================================
- *  Recebe o que `src/lib/eventos.ts` envia do navegador.
+ *  Recebe o que `src/lib/analytics.ts` envia do navegador.
  *
  *  Dois motivos para isso existir:
  *
@@ -15,9 +18,9 @@
  *     redirecionamento, esse lead vira uma lista de retomada.
  *
  *  Onde os dados ficam:
- *    - com o binding KV `ROGAN_LEADS` configurado, gravamos lá (ver README);
- *    - sem ele, cai no log do Worker (`npx wrangler tail`) — nada se perde de
- *      imediato, mas não fica consultável. É o estado de hoje.
+ *    - com o binding KV `ROGAN_KV` configurado, gravamos lá (ver README);
+ *    - sem ele, cai no log do Worker (`npx wrangler tail`). Aqui, ao contrário
+ *      das negociações, log serve: evento perdido não quebra nada na tela.
  * ============================================================================
  */
 
@@ -39,9 +42,6 @@ const TAMANHO_MAXIMO = 2_000;
 /** Quanto tempo a solicitação fica guardada: 180 dias. */
 const VALIDADE_SEGUNDOS = 60 * 60 * 24 * 180;
 
-/** Limite de caracteres por campo de texto vindo do formulário. */
-const LIMITE_TEXTO = 120;
-
 interface StoredEvent {
   nome: string;
   sessao: string;
@@ -57,59 +57,11 @@ interface StoredEvent {
   em: string;
 }
 
-/** Texto curto e limpo, ou `undefined`. Nunca confie no que vem do navegador. */
-function asText(value: unknown): string | undefined {
-  if (typeof value !== 'string') return undefined;
-  const clean = value.trim().slice(0, LIMITE_TEXTO);
-  return clean.length > 0 ? clean : undefined;
-}
-
-/** Número positivo e finito, ou `undefined`. */
-function asNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : undefined;
-}
-
-/** Só o método do KV que usamos aqui. */
-interface KVStore {
-  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
-}
-
-/**
- * KV das solicitações, quando o binding existir.
- *
- * O módulo `cloudflare:workers` só resolve dentro do Worker — em `next dev`
- * a importação falha e seguimos sem KV, gravando no log.
- */
-async function getKVStore(): Promise<KVStore | null> {
-  try {
-    const { env } = await import('cloudflare:workers');
-    const binding = env?.ROGAN_LEADS;
-    return binding ? (binding as KVStore) : null;
-  } catch {
-    return null;
-  }
-}
-
 export async function POST(request: Request): Promise<Response> {
-  let payload: unknown;
+  const input = await readJsonObject(request, TAMANHO_MAXIMO);
+  if (!input) return new Response(null, { status: 400 });
 
-  try {
-    const raw = await request.text();
-    if (raw.length > TAMANHO_MAXIMO) {
-      return new Response(null, { status: 413 });
-    }
-    payload = JSON.parse(raw);
-  } catch {
-    return new Response(null, { status: 400 });
-  }
-
-  if (typeof payload !== 'object' || payload === null) {
-    return new Response(null, { status: 400 });
-  }
-
-  const input = payload as Record<string, unknown>;
   const name = asText(input.nome);
-
   if (!name || !EVENTOS_VALIDOS.has(name)) {
     return new Response(null, { status: 400 });
   }
@@ -139,7 +91,7 @@ export async function POST(request: Request): Promise<Response> {
   const prefix = event.contato ? 'lead' : 'evento';
   const key = `${prefix}:${event.em}:${event.sessao.slice(0, 8)}`;
 
-  const kv = await getKVStore();
+  const kv = await getKV();
 
   if (kv) {
     try {

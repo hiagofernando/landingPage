@@ -8,12 +8,20 @@ import { maskPhone } from '@/lib/format';
 import { calculateDays, calculateQuote } from '@/lib/pricing';
 import { buildWhatsAppUrl, bookingRequestMessage } from '@/lib/whatsapp';
 import { trackEvent } from '@/lib/analytics';
+import {
+  applyFleetStatus,
+  generateRef,
+  isUnderNegotiation,
+  registerPendingRequest,
+} from '@/lib/negotiations';
 import { hasErrors, validateBookingForm } from '@/lib/validation';
 import type { BookingFormErrors } from '@/lib/validation';
+import { useFleetStatus } from '@/hooks/useFleetStatus';
 import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
 import { Alert, ArrowRight, Check, WhatsApp } from '@/components/ui/Icons';
 import { DateRangePicker } from '@/components/search/DateRangePicker';
+import { NegotiationNotice } from '@/components/negotiation/NegotiationNotice';
 import { BookingSummary } from './BookingSummary';
 
 interface BookingFormProps {
@@ -26,8 +34,9 @@ interface BookingFormProps {
  * Formulário de solicitação de locação.
  *
  * Pede o mínimo possível (nome, WhatsApp e datas), mostra o resumo em tempo
- * real e encaminha para o WhatsApp com a mensagem pronta. Nada é gravado:
- * a conversa continua com uma pessoa da equipe.
+ * real e encaminha para o WhatsApp com a mensagem pronta. A conversa continua
+ * com uma pessoa da equipe; o site só guarda o pedido para que o período
+ * apareça "em negociação" quando a mensagem chegar (ver `negotiations.ts`).
  */
 export function BookingForm({ vehicle, initialRange, onSent }: BookingFormProps) {
   const [name, setName] = useState('');
@@ -35,12 +44,20 @@ export function BookingForm({ vehicle, initialRange, onSent }: BookingFormProps)
   const [range, setRange] = useState<DateRange>(initialRange);
   const [errors, setErrors] = useState<BookingFormErrors>({});
   const [sent, setSent] = useState(false);
+  // Uma referência por formulário aberto. Tem que ser estável entre renders:
+  // ela está escrita no link do WhatsApp que o botão já carrega.
+  const [ref] = useState(generateRef);
+
+  const fleetStatus = useFleetStatus();
+  // Com os períodos que a equipe já fechou pelo WhatsApp somados.
+  const liveVehicle = useMemo(() => applyFleetStatus(vehicle, fleetStatus), [vehicle, fleetStatus]);
 
   const days = calculateDays(range.pickupDate || '', range.returnDate || '');
   const quote = useMemo(() => calculateQuote(vehicle, days), [vehicle, days]);
 
-  const availability = checkAvailability(vehicle, range.pickupDate, range.returnDate);
+  const availability = checkAvailability(liveVehicle, range.pickupDate, range.returnDate);
   const blocked = !availability.available;
+  const negotiating = isUnderNegotiation(vehicle, fleetStatus, range.pickupDate, range.returnDate);
 
   const whatsappUrl = buildWhatsAppUrl(
     bookingRequestMessage({
@@ -51,6 +68,7 @@ export function BookingForm({ vehicle, initialRange, onSent }: BookingFormProps)
       returnDate: range.returnDate || '',
       days,
       estimatedTotal: quote.total,
+      ref,
     }),
   );
 
@@ -70,6 +88,15 @@ export function BookingForm({ vehicle, initialRange, onSent }: BookingFormProps)
       firstInvalid?.focus();
       return;
     }
+
+    // Pedido guardado com a mesma referência escrita na mensagem. Só vira
+    // "em negociação" quando a mensagem chegar de fato no WhatsApp.
+    registerPendingRequest({
+      ref,
+      vehicleSlug: vehicle.slug,
+      pickupDate: range.pickupDate,
+      returnDate: range.returnDate,
+    });
 
     /**
      * O passo mais importante do site. Registrado ANTES de a aba ir para o
@@ -174,6 +201,8 @@ export function BookingForm({ vehicle, initialRange, onSent }: BookingFormProps)
           </div>
         </div>
       )}
+
+      {!blocked && negotiating && <NegotiationNotice />}
 
       <BookingSummary
         vehicle={vehicle}

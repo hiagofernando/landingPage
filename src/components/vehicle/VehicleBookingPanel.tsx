@@ -11,7 +11,10 @@ import { hasErrors, validateDateRange } from '@/lib/validation';
 import type { DateRangeErrors } from '@/lib/validation';
 import { buildWhatsAppUrl, vehicleInterestMessage } from '@/lib/whatsapp';
 import { cn } from '@/lib/cn';
+import { applyFleetStatus, isUnderNegotiation } from '@/lib/negotiations';
 import { useDateRangeParams } from '@/hooks/useDateRangeParams';
+import { useFleetStatus } from '@/hooks/useFleetStatus';
+import { NegotiationNotice } from '@/components/negotiation/NegotiationNotice';
 import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { Alert, Check, WhatsApp } from '@/components/ui/Icons';
 import { DateRangePicker } from '@/components/search/DateRangePicker';
@@ -37,11 +40,18 @@ export function VehicleBookingPanel({ vehicle, alternatives }: VehicleBookingPan
   const days = calculateDays(range.pickupDate || '', range.returnDate || '');
   const quote = useMemo(() => calculateQuote(vehicle, days), [vehicle, days]);
 
+  // Períodos fechados pela equipe no WhatsApp contam como ocupados.
+  const fleetStatus = useFleetStatus();
+
   const availability = checkAvailability(
-    vehicle,
+    applyFleetStatus(vehicle, fleetStatus),
     validRange ? range.pickupDate : undefined,
     validRange ? range.returnDate : undefined,
   );
+  const negotiating =
+    validRange &&
+    availability.available &&
+    isUnderNegotiation(vehicle, fleetStatus, range.pickupDate, range.returnDate);
 
   const suggestions = useMemo(() => {
     if (availability.available) return [];
@@ -50,7 +60,7 @@ export function VehicleBookingPanel({ vehicle, alternatives }: VehicleBookingPan
         (candidate) =>
           candidate.id !== vehicle.id &&
           checkAvailability(
-            candidate,
+            applyFleetStatus(candidate, fleetStatus),
             validRange ? range.pickupDate : undefined,
             validRange ? range.returnDate : undefined,
           ).available,
@@ -67,6 +77,7 @@ export function VehicleBookingPanel({ vehicle, alternatives }: VehicleBookingPan
   }, [
     alternatives,
     availability.available,
+    fleetStatus,
     range.pickupDate,
     range.returnDate,
     validRange,
@@ -190,6 +201,12 @@ export function VehicleBookingPanel({ vehicle, alternatives }: VehicleBookingPan
                 </span>
               )}
             </p>
+          </div>
+        )}
+
+        {negotiating && (
+          <div className="mt-4">
+            <NegotiationNotice />
           </div>
         )}
 

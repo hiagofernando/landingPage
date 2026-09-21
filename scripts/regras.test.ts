@@ -31,7 +31,26 @@ import {
   vehicleUrl,
 } from '@/lib/urls';
 import { demoVehicles } from '@/data/vehicles';
-import type { Vehicle } from '@/types';
+import {
+  AUTOMATION_CODE_REGEX,
+  AUTOMATION_REF_REGEX,
+  VEHICLE_CODE_PATTERN,
+  applyFleetStatus,
+  generateRef,
+  isUnderNegotiation,
+  normalizeRef,
+} from '@/lib/negotiations';
+import {
+  closeNegotiation,
+  createPending,
+  getNegotiation,
+  listPublicNegotiations,
+  releaseNegotiation,
+  startNegotiation,
+} from '@/lib/negotiation-store';
+import { signAction, verifyAction } from '@/lib/negotiation-tokens';
+import { memoryStore } from '@/lib/cloudflare';
+import type { PublicNegotiation, Vehicle } from '@/types';
 
 /** Veículo de teste com preços redondos, para as contas ficarem óbvias. */
 const carro: Vehicle = {
@@ -364,5 +383,207 @@ describe('frota demonstrativa', () => {
       assert.ok(v.seats > 0 && v.trunk > 0 && v.year > 2000, `${v.slug}: ficha técnica inválida`);
       assert.ok(v.dailyPrice > 0, `${v.slug}: sem preço`);
     }
+  });
+});
+
+describe('contrato com a automação do WhatsApp', () => {
+  it('todo carro tem código no formato que a automação lê, sem repetir', () => {
+    for (const v of demoVehicles) {
+      assert.match(v.code, VEHICLE_CODE_PATTERN, `${v.slug}: código fora do formato`);
+    }
+    assert.equal(new Set(demoVehicles.map((v) => v.code)).size, demoVehicles.length);
+  });
+
+  it('a automação acha código e referência na mensagem do pedido', () => {
+    const texto = bookingRequestMessage({
+      vehicle: carro,
+      customerName: 'Ana Lima',
+      pickupDate: '2026-07-01',
+      returnDate: '2026-07-08',
+      days: 7,
+      estimatedTotal: 600,
+      ref: 'K7M2QX',
+    });
+    assert.equal(texto.match(AUTOMATION_CODE_REGEX)?.[1], carro.code);
+    assert.equal(texto.match(AUTOMATION_REF_REGEX)?.[1], 'K7M2QX');
+  });
+
+  it('sem referência, a mensagem identifica o carro mas não abre negociação', () => {
+    const texto = bookingRequestMessage({
+      vehicle: carro,
+      customerName: 'Ana',
+      pickupDate: '2026-07-01',
+      returnDate: '2026-07-08',
+      days: 7,
+      estimatedTotal: 600,
+    });
+    assert.equal(texto.match(AUTOMATION_CODE_REGEX)?.[1], carro.code);
+    assert.equal(AUTOMATION_REF_REGEX.test(texto), false, 'sem ref não há o que ativar');
+  });
+
+  it('gera referências válidas e diferentes', () => {
+    const refs = Array.from({ length: 200 }, generateRef);
+    for (const ref of refs) assert.equal(normalizeRef(ref), ref);
+    assert.ok(new Set(refs).size > 195, 'referências repetindo demais');
+  });
+
+  it('aceita a referência redigitada em minúsculas e recusa lixo', () => {
+    assert.equal(normalizeRef(' k7m2qx '), 'K7M2QX');
+    assert.equal(normalizeRef('K7M2Q'), null, 'curta');
+    assert.equal(normalizeRef('K7M2Q0'), null, 'tem zero, que o alfabeto exclui');
+    assert.equal(normalizeRef(42), null);
+  });
+});
+
+describe('negociação vale só para as datas pedidas', () => {
+  const emNegociacao: PublicNegotiation = {
+    code: carro.code,
+    pickupDate: '2026-10-01',
+    returnDate: '2026-10-05',
+    status: 'em_negociacao',
+  };
+
+  it('marca o período que cruza com a negociação', () => {
+    assert.equal(isUnderNegotiation(carro, [emNegociacao], '2026-10-04', '2026-10-08'), true);
+  });
+
+  it('não marca outras datas do mesmo carro', () => {
+    assert.equal(isUnderNegotiation(carro, [emNegociacao], '2026-10-10', '2026-10-15'), false);
+  });
+
+  it('não marca outro carro nas mesmas datas', () => {
+    const outro = { ...carro, code: 'ZZ-9999' };
+    assert.equal(isUnderNegotiation(outro, [emNegociacao], '2026-10-01', '2026-10-05'), false);
+  });
+
+  it('sem datas escolhidas, não há selo', () => {
+    assert.equal(isUnderNegotiation(carro, [emNegociacao]), false);
+  });
+
+  it('em negociação ainda deixa pedir; locado bloqueia só aquele período', () => {
+    const periodo = ['2026-10-02', '2026-10-03'] as const;
+    assert.equal(
+      checkAvailability(applyFleetStatus(carro, [emNegociacao]), ...periodo).available,
+      true,
+      'negociação não pode esconder o carro',
+    );
+
+    const locado = { ...emNegociacao, status: 'locado' as const };
+    const r = checkAvailability(applyFleetStatus(carro, [locado]), ...periodo);
+    assert.equal(r.available, false);
+    assert.equal(r.reason, 'periodo_ocupado');
+
+    assert.equal(
+      checkAvailability(applyFleetStatus(carro, [locado]), '2026-10-10', '2026-10-15').available,
+      true,
+      'locado só naquelas datas',
+    );
+  });
+});
+
+describe('ciclo da negociação', () => {
+  const pedido = {
+    ref: 'K7M2QX',
+    vehicle: carro,
+    pickupDate: '2026-10-01',
+    returnDate: '2026-10-05',
+  };
+  const hoje = '2026-09-21';
+
+  it('pedido → negociação → locado → liberado', async () => {
+    const kv = memoryStore(new Map());
+
+    assert.equal(await createPending(kv, pedido), 'created');
+    assert.deepEqual(await listPublicNegotiations(kv, hoje), [], 'pedido sozinho não aparece');
+
+    const aberta = await startNegotiation(kv, pedido.ref, '5581999998888');
+    assert.equal(aberta?.status, 'em_negociacao');
+    assert.equal(aberta?.contact, '5581999998888');
+    assert.deepEqual(await listPublicNegotiations(kv, hoje), [
+      {
+        code: carro.code,
+        pickupDate: '2026-10-01',
+        returnDate: '2026-10-05',
+        status: 'em_negociacao',
+      },
+    ]);
+
+    assert.equal((await closeNegotiation(kv, pedido.ref))?.status, 'locado');
+    assert.equal((await listPublicNegotiations(kv, hoje))[0]?.status, 'locado');
+
+    assert.equal(await releaseNegotiation(kv, pedido.ref), true);
+    assert.deepEqual(await listPublicNegotiations(kv, hoje), []);
+    assert.equal(await getNegotiation(kv, pedido.ref), null);
+  });
+
+  it('abrir de novo não duplica nem reabre o que foi fechado', async () => {
+    const kv = memoryStore(new Map());
+    await createPending(kv, pedido);
+    await startNegotiation(kv, pedido.ref);
+    await closeNegotiation(kv, pedido.ref);
+
+    // A automação chama a cada mensagem que chega.
+    const denovo = await startNegotiation(kv, pedido.ref);
+    assert.equal(denovo?.status, 'locado');
+    assert.equal((await listPublicNegotiations(kv, hoje)).length, 1);
+  });
+
+  it('referência que o site não emitiu não abre nada', async () => {
+    const kv = memoryStore(new Map());
+    assert.equal(await startNegotiation(kv, 'ABCDEF'), null);
+    assert.equal(await closeNegotiation(kv, 'ABCDEF'), null);
+    assert.equal(await releaseNegotiation(kv, 'ABCDEF'), false);
+  });
+
+  it('não sobrescreve um pedido que já existe', async () => {
+    const kv = memoryStore(new Map());
+    await createPending(kv, pedido);
+    const outroCarro = { ...pedido, vehicle: { ...carro, code: 'ZZ-9999' } };
+    assert.equal(await createPending(kv, outroCarro), 'exists');
+    assert.equal((await startNegotiation(kv, pedido.ref))?.code, carro.code);
+  });
+
+  it('período encerrado sai da lista pública', async () => {
+    const kv = memoryStore(new Map());
+    await createPending(kv, pedido);
+    await startNegotiation(kv, pedido.ref);
+    assert.equal(
+      (await listPublicNegotiations(kv, '2026-10-05')).length,
+      1,
+      'no dia da devolução ainda vale',
+    );
+    assert.equal((await listPublicNegotiations(kv, '2026-10-06')).length, 0);
+  });
+
+  it('a lista pública não leva contato nem referência', async () => {
+    const kv = memoryStore(new Map());
+    await createPending(kv, pedido);
+    await startNegotiation(kv, pedido.ref, '5581999998888');
+    const publico = JSON.stringify(await listPublicNegotiations(kv, hoje));
+    assert.ok(!publico.includes('5581999998888'));
+    assert.ok(!publico.includes(pedido.ref));
+  });
+});
+
+describe('links da ficha', () => {
+  const segredo = 'segredo-de-teste';
+
+  it('aceita o link assinado para aquela ação', async () => {
+    const token = await signAction(segredo, 'K7M2QX', 'fechar');
+    assert.equal(await verifyAction(segredo, 'K7M2QX', 'fechar', token), true);
+  });
+
+  it('recusa trocar a ação, a referência ou o segredo', async () => {
+    const token = await signAction(segredo, 'K7M2QX', 'fechar');
+    assert.equal(await verifyAction(segredo, 'K7M2QX', 'liberar', token), false, 'ação');
+    assert.equal(await verifyAction(segredo, 'ABCDEF', 'fechar', token), false, 'referência');
+    assert.equal(await verifyAction('outro', 'K7M2QX', 'fechar', token), false, 'segredo');
+  });
+
+  it('recusa token adulterado ou ausente', async () => {
+    const token = await signAction(segredo, 'K7M2QX', 'fechar');
+    const adulterado = (token[0] === 'A' ? 'B' : 'A') + token.slice(1);
+    assert.equal(await verifyAction(segredo, 'K7M2QX', 'fechar', adulterado), false);
+    assert.equal(await verifyAction(segredo, 'K7M2QX', 'fechar', undefined), false);
   });
 });

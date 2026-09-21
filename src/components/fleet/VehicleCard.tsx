@@ -1,7 +1,12 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { DateRange, Vehicle } from '@/types';
 import { checkAvailability } from '@/lib/availability';
+import { applyFleetStatus, isUnderNegotiation } from '@/lib/negotiations';
+import { useFleetStatus } from '@/hooks/useFleetStatus';
+import { NegotiationBadge } from '@/components/negotiation/NegotiationNotice';
 import { CATEGORY_LABELS, formatCurrency, formatCurrencyCompact } from '@/lib/format';
 import { calculateDays, calculateQuote } from '@/lib/pricing';
 import { pluralizeDays } from '@/lib/dates';
@@ -21,8 +26,20 @@ interface VehicleCardProps {
   priority?: boolean;
 }
 
+/**
+ * Card de um carro da frota.
+ *
+ * Cliente porque depende da situação vinda do WhatsApp (`useFleetStatus`):
+ * um período fechado pela equipe depois do último deploy também deixa o
+ * carro indisponível, e uma negociação aberta ganha selo.
+ */
 export function VehicleCard({ vehicle, range, priority }: VehicleCardProps) {
-  const availability = checkAvailability(vehicle, range?.pickupDate, range?.returnDate);
+  const fleetStatus = useFleetStatus();
+  const liveVehicle = applyFleetStatus(vehicle, fleetStatus);
+  const availability = checkAvailability(liveVehicle, range?.pickupDate, range?.returnDate);
+  const negotiating =
+    availability.available &&
+    isUnderNegotiation(vehicle, fleetStatus, range?.pickupDate, range?.returnDate);
   const days = calculateDays(range?.pickupDate || '', range?.returnDate || '');
   const quote = days > 0 ? calculateQuote(vehicle, days) : null;
   // Leva o período junto: sem isso o cliente teria que escolher as datas
@@ -62,6 +79,7 @@ export function VehicleCard({ vehicle, range, priority }: VehicleCardProps) {
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           <Badge tone="dark">{CATEGORY_LABELS[vehicle.category]}</Badge>
           {!availability.available && <Badge tone="danger">{availability.message}</Badge>}
+          {negotiating && <NegotiationBadge />}
         </div>
 
         <span className="absolute right-3 bottom-3 rounded-full bg-ink/75 px-2.5 py-1 text-[0.625rem] font-medium text-mist-300 backdrop-blur-sm">

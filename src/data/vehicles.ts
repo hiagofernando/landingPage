@@ -65,6 +65,7 @@ export const demoVehicles: Vehicle[] = [
   {
     id: 'veh-001',
     slug: 'chevrolet-celta-lt',
+    code: 'CE-1001',
     name: 'Chevrolet Celta LT',
     brand: 'Chevrolet',
     model: 'Celta LT',
@@ -90,6 +91,7 @@ export const demoVehicles: Vehicle[] = [
   {
     id: 'veh-002',
     slug: 'volkswagen-fox-vermelho',
+    code: 'FX-1002',
     name: 'Volkswagen Fox (vermelho)',
     brand: 'Volkswagen',
     model: 'Fox',
@@ -115,6 +117,7 @@ export const demoVehicles: Vehicle[] = [
   {
     id: 'veh-003',
     slug: 'ford-ka',
+    code: 'KA-1003',
     name: 'Ford Ka',
     brand: 'Ford',
     model: 'Ka',
@@ -140,6 +143,7 @@ export const demoVehicles: Vehicle[] = [
   {
     id: 'veh-004',
     slug: 'toyota-etios',
+    code: 'ET-1004',
     name: 'Toyota Etios',
     brand: 'Toyota',
     model: 'Etios',
@@ -165,6 +169,7 @@ export const demoVehicles: Vehicle[] = [
   {
     id: 'veh-005',
     slug: 'fiat-uno-vivace',
+    code: 'UN-1005',
     name: 'Fiat Uno Vivace',
     brand: 'Fiat',
     model: 'Uno Vivace',
@@ -189,6 +194,7 @@ export const demoVehicles: Vehicle[] = [
   {
     id: 'veh-006',
     slug: 'fiat-grand-siena',
+    code: 'GS-1006',
     name: 'Fiat Grand Siena',
     brand: 'Fiat',
     model: 'Grand Siena',
@@ -214,6 +220,7 @@ export const demoVehicles: Vehicle[] = [
   {
     id: 'veh-007',
     slug: 'fiat-mobi',
+    code: 'MB-1007',
     name: 'Fiat Mobi',
     brand: 'Fiat',
     model: 'Mobi',

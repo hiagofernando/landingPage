@@ -178,30 +178,115 @@ enviar, a ROGAN ainda assim fica sabendo quem era e qual carro queria.
 
 ### Ligando o armazenamento (uma vez só)
 
-Sem o passo abaixo o site funciona igual, mas cada solicitação só aparece em
-`npx wrangler tail` — some depois e não dá para consultar.
+O mesmo KV guarda solicitações, eventos e as negociações da seção 3.2. Sem ele,
+solicitações e eventos só aparecem em `npx wrangler tail`, e as **negociações
+não funcionam em produção**.
 
 ```sh
-npx wrangler kv namespace create ROGAN_LEADS
+npx wrangler kv namespace create ROGAN_KV
 ```
 
 Cole o id retornado em `wrangler.jsonc`, dentro de `kv_namespaces`:
 
 ```jsonc
-{ "binding": "ROGAN_LEADS", "id": "<id-retornado>" }
+{ "binding": "ROGAN_KV", "id": "<id-retornado>" }
 ```
 
 Para ler o que foi gravado (`lead:` são as solicitações com contato,
 `evento:` o resto):
 
 ```sh
-npx wrangler kv key list --binding ROGAN_LEADS --prefix lead:
-npx wrangler kv key get --binding ROGAN_LEADS "<chave>"
+npx wrangler kv key list --binding ROGAN_KV --prefix lead:
+npx wrangler kv key get --binding ROGAN_KV "<chave>"
 ```
 
 As solicitações expiram sozinhas em 180 dias. O próximo passo natural — ainda
 não feito — é uma página protegida para a ROGAN ver essa lista sem linha de
 comando.
+
+---
+
+## 3.2. "Em negociação" pelo WhatsApp
+
+Quando um cliente pede um carro pelo site e a mensagem **chega** no WhatsApp,
+aquele carro aparece "Em negociação" **para aquelas datas**. A equipe fecha ou
+libera pela ficha que recebe no WhatsApp.
+
+```
+site: clique em "Continuar pelo WhatsApp"
+  → grava um PEDIDO com uma referência (invisível, expira em 48h)
+  → a mensagem sai com "(cód. KA-1003 · ref 7F2KAX)" no fim
+
+automação (n8n): a mensagem chega no WhatsApp do bot
+  → lê a ref e chama POST /api/negociacoes
+  → o período fica EM NEGOCIAÇÃO e a ficha da equipe ganha 2 links
+
+equipe: toca num link da ficha → página de confirmação → botão
+  → "Fechar locação": período vira indisponível no site
+  → "Liberar carro":  negociação some
+```
+
+Regras combinadas com a ROGAN:
+
+- **Vale só para as datas pedidas.** Um carro negociado de 01 a 05/10 continua
+  livre de 10 a 15/10.
+- **Não bloqueia.** Com o selo, outra pessoa ainda consegue pedir o carro — se
+  a primeira negociação cair, a equipe já tem o próximo interessado.
+- **Não expira sozinha.** Só a equipe libera. Uma semana depois da devolução a
+  chave é apagada, porque o período já passou.
+- **Só marca quando a mensagem chega**, não no clique: quem abre o WhatsApp e
+  desiste não trava o carro.
+
+### Configuração
+
+1. O KV `ROGAN_KV` (seção 3.1).
+2. O segredo compartilhado com a automação:
+   ```sh
+   npx wrangler secret put ROGAN_API_SECRET
+   ```
+3. O link do site precisa apontar para o **número do bot** (a instância da
+   automação), não para o número principal da loja — senão a mensagem nunca
+   passa pela automação. É o `NEXT_PUBLIC_WHATSAPP_NUMBER`.
+
+### O que a automação precisa fazer
+
+Ler as duas etiquetas da mensagem. As regex estão em `src/lib/negotiations.ts`
+(`AUTOMATION_CODE_REGEX` e `AUTOMATION_REF_REGEX`), com teste garantindo que o
+site escreve algo que elas leem — **mudou uma, mude a outra no n8n**.
+
+Chamar, quando achar uma `ref`:
+
+```http
+POST /api/negociacoes
+Authorization: Bearer <ROGAN_API_SECRET>
+Content-Type: application/json
+
+{ "ref": "7F2KAX", "contato": "5581999998888@s.whatsapp.net" }
+```
+
+A resposta traz `fecharUrl` e `liberarUrl` para pôr na ficha. Pode chamar a cada
+mensagem que chega: é idempotente. Respostas: `200` abriu (ou já estava aberta),
+`401` segredo errado, `404` referência que o site não emitiu ou que expirou.
+
+### Por que os links abrem uma página em vez de agir direto
+
+O WhatsApp abre todo link para montar a prévia. Se o link fechasse a locação,
+ela fecharia sozinha no instante em que a ficha chegasse. O link só mostra o
+pedido; quem muda o estado é o botão da página (um `POST`).
+
+### Testando localmente
+
+```sh
+ROGAN_API_SECRET=teste npm run dev
+```
+
+Sem o binding, um KV em memória faz as vezes dele. Para simular a automação,
+peça um carro pelo site, copie a `ref` do fim da mensagem e:
+
+```sh
+curl -X POST localhost:3000/api/negociacoes \
+  -H "Authorization: Bearer teste" -d '{"ref":"<ref>"}'
+```
 
 ---
 
@@ -214,6 +299,8 @@ src/
 │   ├── frota/page.tsx          listagem com filtros
 │   ├── frota/[slug]/page.tsx   página do veículo
 │   ├── api/eventos/route.ts    recebe eventos do funil e solicitações
+│   ├── api/negociacoes/        pedidos, negociações e fechar/liberar
+│   ├── negociacao/[ref]/       página de confirmação dos links da ficha
 │   ├── como-funciona/ faq/ contato/
 │   ├── sitemap.ts  robots.ts  icon.svg  not-found.tsx
 │   └── globals.css             tokens de cor, tipografia e animações
@@ -228,7 +315,8 @@ src/
 │   ├── faq/ contact/ shared/
 ├── config/site.ts              ← dados da empresa (arquivo único)
 ├── data/                       vehicles, campaigns, faq, repository
-├── lib/                        dates, pricing, availability, validation, whatsapp, format, urls, analytics
+├── lib/                        dates, pricing, availability, validation, whatsapp, format, urls, analytics,
+│                               negotiations (regras), negotiation-store (estado), cloudflare (KV e segredos)
 ├── hooks/
 └── types/index.ts              modelos de domínio
 ```

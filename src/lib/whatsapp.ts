@@ -2,10 +2,16 @@ import { siteConfig } from '@/config/site';
 import type { ISODate, Vehicle } from '@/types';
 import { formatDateBR, pluralizeDays } from './dates';
 import { formatCurrency } from './format';
+import { messageTag } from './negotiations';
 
 /**
  * Toda mensagem enviada para o WhatsApp da ROGAN é montada aqui.
  * Mudou o tom de voz? Edite só este arquivo.
+ *
+ * As mensagens sobre um carro terminam com uma etiqueta como
+ * `(cód. KA-1003 · ref 7F2KAX)`. Não é enfeite: é o que a automação do
+ * WhatsApp lê para saber o carro e ligar a conversa ao pedido do site. Pode
+ * reescrever o texto à vontade, mas mantenha a etiqueta no fim.
  */
 
 const WHATSAPP_BASE_URL = 'https://wa.me';
@@ -29,6 +35,9 @@ export function vehicleInterestMessage(vehicle: Vehicle): string {
     `Olá! Tenho interesse em alugar o ${vehicle.name} ${vehicle.year}.`,
     '',
     'Gostaria de saber a disponibilidade e as condições da locação.',
+    '',
+    // Sem `ref`: sem datas escolhidas não há período para pôr em negociação.
+    messageTag(vehicle.code),
   ].join('\n');
 }
 
@@ -40,6 +49,8 @@ export interface BookingMessageInput {
   returnDate: ISODate;
   days: number;
   estimatedTotal: number;
+  /** Referência do pedido (`generateRef`). Liga a mensagem à negociação. */
+  ref?: string;
 }
 
 /**
@@ -49,8 +60,16 @@ export interface BookingMessageInput {
  * nunca afirma que a reserva está fechada.
  */
 export function bookingRequestMessage(input: BookingMessageInput): string {
-  const { vehicle, customerName, customerPhone, pickupDate, returnDate, days, estimatedTotal } =
-    input;
+  const {
+    vehicle,
+    customerName,
+    customerPhone,
+    pickupDate,
+    returnDate,
+    days,
+    estimatedTotal,
+    ref,
+  } = input;
 
   const lines = [
     `Olá! Tenho interesse em alugar o ${vehicle.name} ${vehicle.year}.`,
@@ -67,7 +86,12 @@ export function bookingRequestMessage(input: BookingMessageInput): string {
     lines.push(`Meu contato: ${customerPhone.trim()}`);
   }
 
-  lines.push('', 'Gostaria de confirmar a disponibilidade e saber as condições da locação.');
+  lines.push(
+    '',
+    'Gostaria de confirmar a disponibilidade e saber as condições da locação.',
+    '',
+    messageTag(vehicle.code, ref),
+  );
 
   return lines.join('\n');
 }

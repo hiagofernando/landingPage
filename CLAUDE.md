@@ -49,9 +49,39 @@ Use `sendBeacon` (já é o padrão do `trackEvent`): o evento mais importante,
 redirecionamento, para que quem abre o WhatsApp e não envia a mensagem não vire
 lead perdido. Se mexer nesse fluxo, mantenha o aviso em texto no formulário.
 
-**KV:** grava em `ROGAN_LEADS` quando o binding existir; sem ele cai em
+**KV:** grava em `ROGAN_KV` quando o binding existir; sem ele cai em
 `console.log` (visível em `npx wrangler tail`). O binding ainda não foi criado —
 o passo a passo está no README, seção 3.1.
+
+## "Em negociação" pelo WhatsApp
+
+README seção 3.2 tem o fluxo. O que é fácil de quebrar:
+
+- **Contrato com o n8n.** A automação acha o carro e o pedido na mensagem por
+  regex: `AUTOMATION_CODE_REGEX` e `AUTOMATION_REF_REGEX` em
+  `src/lib/negotiations.ts`. O n8n tem cópias delas — **mudou o formato da
+  etiqueta `(cód. KA-1003 · ref 7F2KAX)`, do `Vehicle.code` ou de uma regex, mude
+  no nó "Organizador WP" também**. O teste "contrato com a automação" pega o
+  lado do site.
+- **Vale para datas, não para o carro.** Carro alugado não é carro vendido:
+  a negociação de 01–05/10 não afeta 10–15/10. Não "simplifique" para o carro
+  inteiro.
+- **Negociação não bloqueia pedido** (só `locado` bloqueia) e **não expira
+  sozinha** — decisões da ROGAN, não descuido.
+- **Marca quando a mensagem chega, não no clique.** O clique só grava um pedido
+  pendente. Não mova a abertura da negociação para o navegador.
+- **Link que muda estado nunca é GET.** O WhatsApp abre todo link para montar a
+  prévia; por isso os links da ficha abrem `/negociacao/[ref]` e só o botão faz
+  `POST`.
+- **O pedido pendente não passa pelo `trackEvent`**: ele pula quem tem Do Not
+  Track, e aí a negociação nunca abriria. Fica em `registerPendingRequest`.
+- **Sem `stale-while-revalidate` no `GET /api/negociacoes`.** O navegador também
+  respeita, e mostrava lista velha por até 1 min — carro recém-locado aparecia
+  livre.
+- **Estado só no `negotiation-store.ts`**, sobre a interface `KVStore`. Os testes
+  rodam o ciclo inteiro com `memoryStore(new Map())`.
+- Em produção, sem `ROGAN_KV` ou sem `ROGAN_API_SECRET`, as rotas respondem 503
+  de propósito. Não ponha valor de reserva para o segredo.
 
 ## Armadilhas de conteúdo
 
@@ -73,6 +103,9 @@ Não duplique estes — todos têm teste em `scripts/regras.test.ts`:
 - disponibilidade: `src/lib/availability.ts`
 - período e filtros na URL: `src/lib/urls.ts`
 - mensagens do WhatsApp: `src/lib/whatsapp.ts`
+- negociações: regras em `src/lib/negotiations.ts`, estado em
+  `src/lib/negotiation-store.ts`
+- KV e segredos: `src/lib/cloudflare.ts` (só servidor)
 - dados da empresa: `src/config/site.ts` (arquivo único)
 
 Páginas buscam os dados e passam por prop; componentes não buscam sozinhos
@@ -85,6 +118,9 @@ Identificadores em inglês, comentários e textos de tela em português.
 - `public/frota/exemplos/*.jpg` e `public/frota/*.svg` estão órfãos (substituídos
   por WebP e pela foto real no `WhyRogan`). Só ocupam espaço no deploy.
 - Não existe tela para a ROGAN ler as solicitações — hoje só por linha de comando.
+- Negociação só funciona em produção depois de: criar `ROGAN_KV`, definir
+  `ROGAN_API_SECRET`, apontar `NEXT_PUBLIC_WHATSAPP_NUMBER` para o número do bot
+  e criar a variante locadora do fluxo no n8n.
 
 ## Skills do projeto
 

@@ -8,6 +8,55 @@ entradas são por data. O hash ao lado de cada bloco leva ao commit completo
 
 ---
 
+## 2026-09-21
+
+### Adicionado
+
+- **"Em negociação" pelo WhatsApp.** Quando a mensagem de um pedido chega no
+  WhatsApp do bot, o carro aparece "Em negociação" no site **para aquelas
+  datas**. A equipe fecha (o período vira indisponível) ou libera pelos links da
+  ficha. Decidido com a ROGAN: vale só para as datas pedidas, não impede outro
+  cliente de pedir, e só a equipe libera.
+  - `src/lib/negotiations.ts` (regras), `src/lib/negotiation-store.ts` (estado),
+    `src/lib/negotiation-tokens.ts` (assinatura dos links).
+  - Rotas: `POST /api/negociacoes/pedidos` (navegador), `POST /api/negociacoes`
+    (automação, com segredo), `GET /api/negociacoes` (lista pública, sem dados
+    pessoais), `POST /api/negociacoes/[ref]` (fechar/liberar).
+  - Página `/negociacao/[ref]`: confirmação dos links da ficha. Existe porque o
+    WhatsApp abre todo link para montar a prévia — um link que agisse direto
+    fecharia a locação sozinho.
+  - Selo nos cards e aviso no formulário e na página do carro.
+- **Código por carro** (`KA-1003`...) e etiqueta `(cód. ... · ref ...)` no fim da
+  mensagem do WhatsApp — é o que a automação lê.
+- **19 testes**, incluindo o contrato com a automação: o site tem que escrever
+  uma mensagem que as regex do n8n conseguem ler.
+
+### Alterado
+
+- **Binding KV renomeado de `ROGAN_LEADS` para `ROGAN_KV`**: agora guarda
+  negociações, não só leads. Nunca tinha sido criado, então nada se perde.
+- **Acesso a KV e segredos centralizado** em `src/lib/cloudflare.ts`, e leitura
+  de JSON das rotas em `src/lib/http.ts` — o `/api/eventos` tinha cópias próprias.
+- **Disponibilidade considera os períodos fechados pelo WhatsApp**, somados aos
+  de `vehicles.ts`, em cards, filtro "apenas disponíveis", página do carro e
+  formulário.
+- `robots.ts` bloqueia `/api/` e `/negociacao/`.
+
+### Corrigido
+
+- Comentário do `/api/eventos` apontava para `src/lib/eventos.ts`, que foi
+  renomeado para `analytics.ts`.
+
+### Pendente
+
+- Criar o KV `ROGAN_KV` e o segredo `ROGAN_API_SECRET` na Cloudflare.
+- Apontar `NEXT_PUBLIC_WHATSAPP_NUMBER` para o número do bot.
+- **Variante locadora do fluxo no n8n.** O Showroom original é de revenda
+  (pergunta entrada, financiamento, nome limpo, troca) e não pode ser alterado
+  no lugar, porque é o produto vendido para as revendas.
+
+---
+
 ## 2026-09-20
 
 ### Adicionado

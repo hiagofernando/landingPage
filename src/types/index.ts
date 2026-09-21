@@ -35,6 +35,14 @@ export interface Vehicle {
   id: string;
   /** Usado na URL: /frota/[slug] */
   slug: string;
+  /**
+   * Código curto que vai na mensagem do WhatsApp, ex.: `KA-1003`.
+   *
+   * Formato fixo: duas letras, hífen, 3 a 5 dígitos. É o formato que a
+   * automação do WhatsApp (Showroom, no n8n) procura na mensagem para saber de
+   * qual carro o cliente está falando — mudar o formato quebra a automação.
+   */
+  code: string;
   name: string;
   brand: string;
   model: string;
@@ -116,4 +124,27 @@ export interface FleetFilters {
 export interface DateRange {
   pickupDate: ISODate | '';
   returnDate: ISODate | '';
+}
+
+/**
+ * Situação de um período negociado pelo WhatsApp.
+ *
+ * - `em_negociacao`: o cliente mandou a mensagem e a equipe ainda não fechou.
+ *   O carro continua podendo ser pedido por outras pessoas nessas datas.
+ * - `locado`: a equipe fechou. O período vira indisponível de verdade.
+ */
+export type NegotiationStatus = 'em_negociacao' | 'locado';
+
+/**
+ * O que o site mostra publicamente sobre uma negociação.
+ *
+ * Sem nome, telefone nem referência: qualquer visitante recebe esta lista,
+ * então ela só diz "este carro, estas datas, esta situação".
+ */
+export interface PublicNegotiation {
+  /** `Vehicle.code`. */
+  code: string;
+  pickupDate: ISODate;
+  returnDate: ISODate;
+  status: NegotiationStatus;
 }
